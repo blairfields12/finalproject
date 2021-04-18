@@ -12,15 +12,26 @@ def dataFromYelp(apiKey, location):
     p = {'term' : 'restaurant', 'location' : location, 'sort_by' : 'review_count', 'sort_by' : 'rating', 'limit' : 50}
     requestURL = requests.get(baseURL, headers = headers, params = p)
     data = json.loads(requestURL.text)
-    print(data)
+    # print(data)
     yelpData = data['businesses']
-    #print(yelpData)
+    # print(yelpData)
     information = [] 
     for i in yelpData: 
         if i['id'] not in information: 
-            information.append((i['name']))
-    #print(information)
+            information.append((i['name'], i.get('price', ''), i['rating'], i['location']['zip_code']))  
+    print(information)
+
+def yelpData(): 
+    conn = sqlite3.connect(path+'/'+db_name) #NEED HELP 
+    cur = conn.cursor()
+    cur.execute("CREATE TABLE YelpData (RestaurantName TEXT, Price TEXT, Rating FLOAT, zipCode TEXT)")
+
+def yelpDatabase(): 
+    
+
+
 
 dataFromYelp(apiKey, 'Ann Arbor')
+    
     
 
