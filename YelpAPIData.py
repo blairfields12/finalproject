@@ -56,27 +56,9 @@ def setUpDatabase(db_name):
 #     return tupList
    
 
-
-#CreateCities Database 
-def CitiesDatabase(data): 
-    cur, conn = setUpDatabase('RestaurantCities.db')
-    cur.execute('CREATE TABLE IF NOT EXISTS RestaurantCities (Cities TEXT PRIMARY KEY)')
-    count = 0 
-    for tup in data: 
-        if count == 25: 
-            break #break because cannot be 25 so exit for loop and go to line 90
-        if cur.execute('SELECT Cities FROM RestaurantCities WHERE Cities = ?', (tup[4],)).fetchone() == None: #making sure no duplicate data 
-            cur.execute('INSERT INTO RestaurantCities (Cities) VALUES (?)', (tup[4],))
-            count += 1 #controlling for 25 items adding to database at time
-    
-    conn.commit()
-    cur.close()
-#zipcodeID connects this table to yelp table - strings of zipcodes takes up more space than numbers so  beneficial for repeating zipcodes
-
 # Create a function called CreateYelpDatabase to insert the values of the list into the table called YelpData
-def CreateYelpDatabase(data):
-    cur, conn = setUpDatabase('YelpData.db')
-    cur.execute('CREATE TABLE IF NOT EXISTS YelpData (RestaurantName TEXT, Price TEXT, Rating FLOAT, zipCode TEXT)')
+def CreateYelpDatabase(data, cur, conn):
+    cur.execute('CREATE TABLE IF NOT EXISTS YelpData (RestaurantName TEXT, Price TEXT, Rating FLOAT, zipCode TEXT, CityID INTEGER)')
 
     # restaurantName = [] #HOW DO I DO THIS SO I DONT HAVE TO REPEAT ALL OF THIS BECAUSE I HAVE IN FUNCTION ABOVE
     # restaurantPrice = []
@@ -97,11 +79,27 @@ def CreateYelpDatabase(data):
         if count == 25: 
             break #break because cannot be 25 so exit for loop and go to line 90
         if cur.execute('SELECT RestaurantName FROM YelpData WHERE RestaurantName = ?', (tup[0],)).fetchone() == None: #making sure no duplicate data 
-            cur.execute('INSERT INTO YelpData (RestaurantName, Price, Rating, zipCode) VALUES (?, ?, ?, ?)', (tup[0], tup[1], tup[2], tup[3],))
+            cur.execute('SELECT ID FROM RestaurantCities WHERE Cities == ?', (tup[4],)) 
+            cityID = cur.fetchone()[0]
+            cur.execute('INSERT INTO YelpData (RestaurantName, Price, Rating, zipCode, CityID) VALUES (?, ?, ?, ?, ?)', (tup[0], tup[1], tup[2], tup[3], cityID))
             count += 1 #controlling for 25 items adding to database at time
     
     conn.commit()
-    cur.close()
+
+#CreateCities table 
+def setUpCitiesTable(data, cur, conn): 
+    cur.execute('CREATE TABLE IF NOT EXISTS RestaurantCities (ID INTEGER PRIMARY KEY, Cities TEXT)')
+    count = 0 
+    print(data)
+    for tup in data: 
+        if count == 25: 
+            break #break because cannot be 25 so exit for loop and go to line 90
+        if cur.execute('SELECT Cities FROM RestaurantCities WHERE Cities = ?', (tup[4],)).fetchone() == None: #making sure no duplicate data 
+            cur.execute('INSERT INTO RestaurantCities (Cities) VALUES (?)', (tup[4],))
+            count += 1 #controlling for 25 items adding to database at time
+    
+    conn.commit()
+#zipcodeID connects this table to yelp table - strings of zipcodes takes up more space than numbers so  beneficial for repeating zipcodes
 
 
     
@@ -111,9 +109,12 @@ def CreateYelpDatabase(data):
 # data = dataFromYelp(apiKey, 'Ann Arbor')[0:20]
 # YelpDatabase(data)
 # getRestaurantInfo(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago']))
-CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']))
-CitiesDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']))
+cur, conn = setUpDatabase('YelpData.db')
+setUpCitiesTable(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
+CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
 # setUpDatabase('YelpData.db')
+
+conn.close()
     
 
 
