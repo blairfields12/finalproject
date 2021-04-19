@@ -34,18 +34,25 @@ def weather_data(API_KEY, latitude, longitude, start_date):
     #print(response)
     data = []
 
-    for elem in response:
+    position = 0
+    for elem in response['hourly']:
+        time = response['hourly'][position]['dt']
         city = response['lat']
         if city == 42.2808:
             city_name = 'Ann Arbor'
+            temp = response['hourly'][position]['temp']
+            forecast = response['hourly'][position]['weather'][0]['description']
+            humidity = response['hourly'][position]['humidity']
         if city == 34.0522:
             city_name = 'Los Angeles'
-        temp = response['current']['temp']
-        forecast = response['current']['weather'][0]['description']
-        humidity = response['current']['humidity']
-        data.append((city_name, temp, forecast, humidity))
+            temp = response['hourly'][position]['temp']
+            forecast = response['hourly'][position]['weather'][0]['description']
+            humidity = response['hourly'][position]['humidity']
+        data.append((time, city_name, temp, forecast, humidity))
+        position = position + 1
 
-    print(data)
+
+    #print(data)
     return data
 
 
@@ -53,16 +60,18 @@ def create_table(cur, conn, data):
     '''This function creates the WeatherData table and inserts the 
     sorted information from both cities to the table.'''
 
-    cur.execute("CREATE TABLE IF NOT EXISTS WeatherData (city TEXT PRIMARY KEY, temperature FLOAT, forecast TEXT, humidity_percentage FLOAT)")
+    #cur.execute('DROP TABLE IF EXISTS WeatherData')
+    cur.execute("CREATE TABLE IF NOT EXISTS WeatherData (time INTEGER PRIMARY KEY, city TEXT, temperature FLOAT, forecast TEXT, humidity_percentage FLOAT)")
     for elem in data:
-        cur.execute("INSERT OR IGNORE INTO WeatherData (city, temperature, forecast, humidity_percentage) VALUES (?, ?, ?, ?)", (elem[0], elem[1], elem[2], elem[3]))
+        cur.execute("INSERT INTO WeatherData (time, city, temperature, forecast, humidity_percentage) VALUES (?, ?, ?, ?, ?)", (elem[0], elem[1], elem[2], elem[3], elem[4]))
+
     conn.commit()
 
 def main():
     cur, conn = setUpDatabase('WeatherData.db')
     start_date = 1618358400
     
-    for i in range(25):
+    for i in range(101):
         AA = weather_data(API_KEY, annarbor_latitude, annarbor_longitude, start_date)
         LA = weather_data(API_KEY, la_latitude, la_longitude, start_date)
         create_table(cur, conn, AA)
