@@ -3,8 +3,6 @@
 import json
 import requests
 import sqlite3
-<<<<<<< HEAD
-=======
 import os
 
 
@@ -12,8 +10,8 @@ apiKey = 'kP35wj7sg11cJpUJDjT11YnTc_zqbIyoLmOcb0z98mWud37ESt5qV2d5InA2BGMe-XEceQ
 
 #getting data from the Yelp API
 def dataFromYelp(apiKey, locationList):
+    information = [] 
     for location in locationList: 
-
         baseURL = 'https://api.yelp.com/v3/businesses/search'
         headers = {'Authorization': 'Bearer %s' % apiKey}
         # p = {'term' : 'restaurant', 'location' : location, 'sort_by' : 'review_count', 'sort_by' : 'rating', 'limit' : 50}
@@ -21,12 +19,12 @@ def dataFromYelp(apiKey, locationList):
 
         requestURL = requests.get(baseURL, headers = headers, params = p)
         data = json.loads(requestURL.text)
+        #print(data)
         yelpData = data['businesses']
         # print(yelpData)
-        information = [] 
         for i in yelpData: 
-            if i['id'] not in information: 
-                information.append((i['name'], i.get('price', ''), i['rating'], i['location']['zip_code'], i['location']['city']))  
+            # if i['id'] not in information: 
+            information.append((i['name'], i.get('price', ''), i['rating'], i['location']['zip_code'], i['location']['city']))  
         # print(information)
     return information
 
@@ -92,7 +90,7 @@ def CreateYelpDatabase(data, cur, conn):
 def setUpCitiesTable(data, cur, conn): 
     cur.execute('CREATE TABLE IF NOT EXISTS RestaurantCities (ID INTEGER PRIMARY KEY, Cities TEXT)')
     count = 0 
-    print(data)
+   # print(data)
     for tup in data: 
         if count == 25: 
             break #break because cannot be 25 so exit for loop and go to line 90
@@ -119,5 +117,3 @@ CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 
 conn.close()
     
 
-
->>>>>>> e1aa0f94cb7ad0ff48911aa51ddd10f96d653e95
