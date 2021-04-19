@@ -58,7 +58,7 @@ def create_table(cur, conn, data):
     conn.commit()
 
 def main():
-    cur, conn = setUpDatabase('weather_data.db')
+    cur, conn = setUpDatabase('WeatherData.db')
     start_date = 1618358400
     
     for tup in data:
