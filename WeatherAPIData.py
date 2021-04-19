@@ -51,7 +51,6 @@ def create_table(cur, conn, data):
     '''This function creates the WeatherData table and inserts the 
     sorted information from both cities to the table.'''
 
-    #cur.execute("DROP TABLE IF EXISTS WeatherData")
     cur.execute("CREATE TABLE IF NOT EXISTS WeatherData (city TEXT PRIMARY KEY, temperature FLOAT, forecast TEXT, humidity_percentage FLOAT)")
     for elem in data:
         cur.execute("INSERT OR IGNORE INTO WeatherData (city, temperature, forecast, humidity_percentage) VALUES (?, ?, ?, ?)", (elem[0], elem[1], elem[2], elem[3]))
@@ -61,7 +60,7 @@ def main():
     cur, conn = setUpDatabase('WeatherData.db')
     start_date = 1618358400
     
-    for tup in data:
+    for i in range(25):
         AA = weather_data(API_KEY, annarbor_latitude, annarbor_longitude, start_date)
         LA = weather_data(API_KEY, la_latitude, la_longitude, start_date)
         create_table(cur, conn, AA)
