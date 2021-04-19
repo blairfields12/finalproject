@@ -60,10 +60,12 @@ def create_table(cur, conn, data):
 
 def main():
     cur, conn = setUpDatabase('weather_data.db')
-    AA1 = weather_data(API_KEY, annarbor_latitude, annarbor_longitude, start_date)
-    create_table(cur, conn, AA1)
-    # for i in range(100):
-    #     start_date = start_date + 3,600
+    for i in range(100):
+        AA = weather_data(API_KEY, annarbor_latitude, annarbor_longitude, start_date)
+        LA = weather_data(API_KEY, la_latitude, la_longitude, start_date)
+        create_table(cur, conn, AA)
+        create_table(cur, conn, LA)
+        start_date = start_date + 3,600
 
 if __name__ == "__main__":
     main()
