@@ -7,8 +7,6 @@ import os
 
 API_KEY = '2c4debeef933141f65cb3c162b82970d'
 
-'''comment'''
-
 annarbor_latitude = 42.2808
 annarbor_longitude = -83.7430
 
@@ -40,7 +38,6 @@ def weather_data(API_KEY, latitude, longitude, start_date):
     baseurl = "https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={}&lon={}&dt={}&appid={}".format(latitude, longitude, start_date, API_KEY)
     r = requests.get(baseurl)
     response = json.loads(r.text)
-    #print(response)
     data = []
 
     position = 0
@@ -79,7 +76,6 @@ def weather_data(API_KEY, latitude, longitude, start_date):
     except:
         print('Error')
 
-    #print(data)
     return data
 
 
@@ -94,7 +90,7 @@ def create_table(cur, conn, data):
     for elem in data:
         if count == 5:
             break
-        if cur.execute("SELECT Time FROM WeatherData WHERE Time = ?", (elem[0],)).fetchone() == None:
+        if cur.execute("SELECT Time, City FROM WeatherData WHERE Time = ? and City = ?", (elem[0], elem[1],)).fetchone() == None:
             cur.execute("INSERT INTO WeatherData (ID, Time, City, Temperature, Forecast, Humidity_Percentage) VALUES (?, ?, ?, ?, ?, ?)", (num, elem[0], elem[1], elem[2], elem[3], elem[4]))
             num = num + 1
             count = count + 1
