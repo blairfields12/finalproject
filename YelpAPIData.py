@@ -106,8 +106,3 @@ CreateYelpDatabase(dataFromYelp(apiKey, 'Ann Arbor'))
     
 
 
-
-
-
-
-    
