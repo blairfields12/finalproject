@@ -53,8 +53,7 @@ def weather_data(API_KEY, latitude, longitude, start_date):
             data.append((time, city_name, temp, forecast, humidity))
             position = position + 1
     except:
-        print('ERROR')
-        print(response['hourly'])
+        print('Error')
 
     #print(data)
     return data
@@ -64,14 +63,19 @@ def create_table(cur, conn, data):
     '''This function creates the WeatherData table and inserts the 
     sorted information from both cities to the table.'''
 
-    cur.execute('DROP TABLE IF EXISTS WeatherData')
-    # cur.execute("CREATE TABLE IF NOT EXISTS WeatherData (id INTEGER PRIMARY KEY, time INTEGER, city TEXT, temperature FLOAT, forecast TEXT, humidity_percentage FLOAT)")
-    # cur.execute("SELECT * FROM WeatherData")
-    # num = len(cur.fetchall())
+    cur.execute("CREATE TABLE IF NOT EXISTS WeatherData (id INTEGER PRIMARY KEY, time INTEGER, city TEXT, temperature FLOAT, forecast TEXT, humidity_percentage FLOAT)")
+    cur.execute("SELECT * FROM WeatherData")
+    num = len(cur.fetchall())
+    count = 0
+    for elem in data:
+        if count == 5:
+            break
+        else:
+            cur.execute("INSERT INTO WeatherData (id, time, city, temperature, forecast, humidity_percentage) VALUES (?, ?, ?, ?, ?, ?)", (num, elem[0], elem[1], elem[2], elem[3], elem[4]))
+            num = num + 1
+            count = count + 1
+    cur.execute("INSERT INTO WeatherData (id, time, city, temperature, forecast, humidity_percentage) VALUES (?, ?, ?, ?, ?, ?)", (num, elem[0], elem[1], elem[2], elem[3], elem[4]))
 
-    # for elem in data:
-    #     cur.execute("INSERT INTO WeatherData (id, time, city, temperature, forecast, humidity_percentage) VALUES (?, ?, ?, ?, ?, ?)", (num, elem[0], elem[1], elem[2], elem[3], elem[4]))
-    #     num = num + 1
     conn.commit()
 
 def main():
