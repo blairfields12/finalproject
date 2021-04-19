@@ -15,6 +15,15 @@ annarbor_longitude = -83.7430
 la_latitude = 34.0522
 la_longitude = -118.2437
 
+chi_latitude = 41.8781
+chi_longitude = 87.6298
+
+det_latitude = 42.3314
+det_longitude = 83.0458
+
+nyc_latitude = 40.7128
+nyc_longitude = 74.0060
+
 
 def setUpDatabase(db_name):
     '''This function will create a database named after the string 
@@ -74,7 +83,6 @@ def create_table(cur, conn, data):
             cur.execute("INSERT INTO WeatherData (id, time, city, temperature, forecast, humidity_percentage) VALUES (?, ?, ?, ?, ?, ?)", (num, elem[0], elem[1], elem[2], elem[3], elem[4]))
             num = num + 1
             count = count + 1
-    cur.execute("INSERT INTO WeatherData (id, time, city, temperature, forecast, humidity_percentage) VALUES (?, ?, ?, ?, ?, ?)", (num, elem[0], elem[1], elem[2], elem[3], elem[4]))
 
     conn.commit()
 
@@ -83,8 +91,14 @@ def main():
     start_date = 1618358400
     AA = weather_data(API_KEY, annarbor_latitude, annarbor_longitude, start_date)
     LA = weather_data(API_KEY, la_latitude, la_longitude, start_date)
+    CHI = weather_data(API_KEY, chi_latitude, chi_longitude, start_date)
+    DET = weather_data(API_KEY, det_latitude, det_longitude, start_date)
+    NYC = weather_data(API_KEY, nyc_latitude, nyc_latitude, start_date)
     create_table(cur, conn, AA)
     create_table(cur, conn, LA)
+    create_table(cur, conn, CHI)
+    create_table(cur, conn, DET)
+    create_table(cur, conn, NYC)
 
 if __name__ == "__main__":
     main()
