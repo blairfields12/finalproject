@@ -29,7 +29,7 @@ def weather_data(API_KEY, latitude, longitude, start_date):
     baseurl = "https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={}&lon={}&dt={}&appid={}".format(latitude, longitude, start_date, API_KEY)
     r = requests.get(baseurl)
     response = json.loads(r.text)
-    print(response)
+    #print(response)
     data = []
 
     for elem in response:
@@ -43,6 +43,7 @@ def weather_data(API_KEY, latitude, longitude, start_date):
         humidity = response['current']['humidity']
         data.append((city_name, temp, forecast, humidity))
 
+    print(data)
     return data
 
 
@@ -57,11 +58,10 @@ def create_table(cur, conn, data):
     conn.commit()
 
 def main():
-    cur, conn = setUpDatabase('weather_data.db')
+    cur, conn = setUpDatabase('WeatherData.db')
     start_date = 1618358400
-    # AA = weather_data(API_KEY, annarbor_latitude, annarbor_longitude, start_date)
-    # create_table(cur, conn, AA)
-    for i in range(25):
+    
+    for tup in data:
         AA = weather_data(API_KEY, annarbor_latitude, annarbor_longitude, start_date)
         LA = weather_data(API_KEY, la_latitude, la_longitude, start_date)
         create_table(cur, conn, AA)

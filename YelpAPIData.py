@@ -3,6 +3,8 @@
 import json
 import requests
 import sqlite3
+<<<<<<< HEAD
+=======
 import os
 
 
@@ -118,3 +120,4 @@ conn.close()
     
 
 
+>>>>>>> e1aa0f94cb7ad0ff48911aa51ddd10f96d653e95
