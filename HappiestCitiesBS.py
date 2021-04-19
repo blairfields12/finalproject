@@ -12,10 +12,37 @@ def getTags():
     soup = BeautifulSoup(r.text, 'html.parser')
     best_cities = []
     tags = soup.find_all('div', class_="slide-layout clearfix")
-    for tag in tags:
-        best_cities.append((tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip(), tag.find_all('p')[2].text.replace("Population:", "").strip(), tag.find_all('p')[3].text.replace("Average annual salary:", "").strip(), tag.find_all('p')[4].text.replace("Quality of life:", "").strip(), tag.find_all('p')[5].text.replace("Value index:", "").strip()))
-    print(best_cities)
+    p = 0
+    salary = 0
+    quality = 0
+    
 
+    for tag in tags:
+        for content in tag.find_all('p'):
+            if content.text.startswith("Population:"):
+                p = content.text.replace("Population:", "").strip()
+                p = p.replace(",", '')   
+         
+            if content.text.startswith("Average annual salary:"):
+                salary = content.text.replace("Average annual salary:", "").strip()[1:]
+                salary = salary.replace(",", '')   
+
+            if content.text.startswith("Quality of life:"):
+                quality = content.text.replace("Quality of life:", "").strip()
+            
+        best_cities.append((tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip(), int(p), int(salary), float(quality)))
+    print(best_cities)
+            
+
+                
+            
+        
+#        best_cities.append((tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip(), tag.find_all('p')[2].text.replace("Population:", "").strip(), tag.find_all('p')[3].text.replace("Average annual salary:", "").strip(), tag.find_all('p')[4].text.replace("Quality of life:", "").strip(), tag.find_all('p')[5].text.replace("Value index:", "").strip()))
+       #best_cities.append((tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip(), float(population)))
+
+       #, tag.find_all('p')[2].text, tag.find_all('p')[3].text, tag.find_all('p')[4].text.replace("Quality of life:", "").strip(), tag.find_all('p')[5].text))
+    
+#
 
 
 
