@@ -5,6 +5,25 @@ import requests
 import sqlite3
 import os
 
+YelpAPIKey = 'kP35wj7sg11cJpUJDjT11YnTc_zqbIyoLmOcb0z98mWud37ESt5qV2d5InA2BGMe-XEceQ4M8n3D8zcLraN6qjRUEiWDcNEK9pWnFnLwCxZHpDbiXnzfLHql0GZ4YHYx'
+
+OpenWeatherAPIKey = '2c4debeef933141f65cb3c162b82970d'
+
+annarbor_latitude = 42.2808
+annarbor_longitude = -83.7430
+
+la_latitude = 34.0522
+la_longitude = -118.2437
+
+chi_latitude = 41.8781
+chi_longitude = 87.6298
+
+det_latitude = 42.3314
+det_longitude = 83.0458
+
+nyc_latitude = 40.7128
+nyc_longitude = 74.0060
+
 
 #sets up the finalproject database
 def setUpDatabase(db_name):
@@ -12,8 +31,7 @@ def setUpDatabase(db_name):
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
-    
-apiKey = 'kP35wj7sg11cJpUJDjT11YnTc_zqbIyoLmOcb0z98mWud37ESt5qV2d5InA2BGMe-XEceQ4M8n3D8zcLraN6qjRUEiWDcNEK9pWnFnLwCxZHpDbiXnzfLHql0GZ4YHYx'
+
 
 #getting data from the Yelp API
 def dataFromYelp(apiKey, locationList):
@@ -35,7 +53,6 @@ def dataFromYelp(apiKey, locationList):
 # Create a function called CreateYelpDatabase to insert the values of the list into the table called YelpData
 def CreateYelpDatabase(data, cur, conn):
     cur.execute('CREATE TABLE IF NOT EXISTS YelpData (RestaurantName TEXT, Price TEXT, Rating FLOAT, zipCode TEXT, CityID INTEGER)')
-
 
     count = 0 
     for tup in data: 
@@ -63,22 +80,6 @@ def setUpCitiesTable(data, cur, conn):
     
     conn.commit()
 
-API_KEY = '2c4debeef933141f65cb3c162b82970d'
-
-annarbor_latitude = 42.2808
-annarbor_longitude = -83.7430
-
-la_latitude = 34.0522
-la_longitude = -118.2437
-
-chi_latitude = 41.8781
-chi_longitude = 87.6298
-
-det_latitude = 42.3314
-det_longitude = 83.0458
-
-nyc_latitude = 40.7128
-nyc_longitude = 74.0060
 
 
 def weather_data(API_KEY, latitude, longitude, start_date):
@@ -153,11 +154,11 @@ def main():
     cur, conn = setUpDatabase('finalproject.db')
     start_date = 1618358400
     
-    AA = weather_data(API_KEY, annarbor_latitude, annarbor_longitude, start_date)
-    LA = weather_data(API_KEY, la_latitude, la_longitude, start_date)
-    CHI = weather_data(API_KEY, chi_latitude, chi_longitude, start_date)
-    DET = weather_data(API_KEY, det_latitude, det_longitude, start_date)
-    NYC = weather_data(API_KEY, nyc_latitude, nyc_latitude, start_date)
+    AA = weather_data(OpenWeatherAPIKey, annarbor_latitude, annarbor_longitude, start_date)
+    LA = weather_data(OpenWeatherAPIKey, la_latitude, la_longitude, start_date)
+    CHI = weather_data(OpenWeatherAPIKey, chi_latitude, chi_longitude, start_date)
+    DET = weather_data(OpenWeatherAPIKey, det_latitude, det_longitude, start_date)
+    NYC = weather_data(OpenWeatherAPIKey, nyc_latitude, nyc_latitude, start_date)
     
     create_table(cur, conn, AA)
     create_table(cur, conn, LA)
@@ -165,8 +166,8 @@ def main():
     create_table(cur, conn, DET)
     create_table(cur, conn, NYC)
 
-    setUpCitiesTable(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
-    CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
+    setUpCitiesTable(dataFromYelp(YelpAPIKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
+    CreateYelpDatabase(dataFromYelp(YelpAPIKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
 
 if __name__ == "__main__":
     main()
