@@ -25,16 +25,18 @@ nyc_latitude = 40.7128
 nyc_longitude = 74.0060
 
 
-#sets up the finalproject database
 def setUpDatabase(db_name):
+    '''This function will create a database named after the string input into the function.'''
+
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
 
 
-#getting data from the Yelp API
 def dataFromYelp(apiKey, locationList):
+    '''This function pulls data from the Yelp API and stores it in a list of tuples containing the a restaurant's name, price, rating, zip code and city.'''
+
     information = [] 
     for location in locationList: 
         baseURL = 'https://api.yelp.com/v3/businesses/search'
@@ -50,10 +52,10 @@ def dataFromYelp(apiKey, locationList):
     return information
 
 
-# Create a function called CreateYelpDatabase to insert the values of the list into the table called YelpData
-def CreateYelpDatabase(data, cur, conn):
-    cur.execute('CREATE TABLE IF NOT EXISTS YelpData (RestaurantName TEXT, Price TEXT, Rating FLOAT, zipCode TEXT, CityID INTEGER)')
+def CreateYelpTable(data, cur, conn):
+    '''This function creates the Yelp Table and inserts the all the values in the list of tuples into the respective columns.'''
 
+    cur.execute('CREATE TABLE IF NOT EXISTS YelpData (RestaurantName TEXT, Price TEXT, Rating FLOAT, zipCode TEXT, CityID INTEGER)')
     count = 0 
     for tup in data: 
         if count == 25: 
@@ -63,11 +65,14 @@ def CreateYelpDatabase(data, cur, conn):
             cityID = cur.fetchone()[0]
             cur.execute('INSERT INTO YelpData (RestaurantName, Price, Rating, zipCode, CityID) VALUES (?, ?, ?, ?, ?)', (tup[0], tup[1], tup[2], tup[3], cityID))
             count += 1 #controlling for 25 items adding to database at time
-    
+
     conn.commit()
 
-#CreateCities table 
+
 def setUpCitiesTable(data, cur, conn): 
+    '''This function creates the Cities Table with the cities pulled from the list of tuples and creates the integer IDs for each city to be
+    used later on when joining the data.'''
+
     cur.execute('CREATE TABLE IF NOT EXISTS RestaurantCities (ID INTEGER PRIMARY KEY, Cities TEXT)')
     count = 0 
    # print(data)
@@ -164,7 +169,7 @@ def main():
     create_table(cur, conn, NYC)
 
     setUpCitiesTable(dataFromYelp(YelpAPIKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
-    CreateYelpDatabase(dataFromYelp(YelpAPIKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
+    CreateYelpTable(dataFromYelp(YelpAPIKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
 
 if __name__ == "__main__":
     main()
