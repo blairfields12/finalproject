@@ -27,7 +27,8 @@ def airqualitydata(API_KEY, city, state, country):
         for elem in response:
             city = response['data']['city']
             air_quality = base['aqius']
-            aqi.append((city, air_quality))
+            weather_temp = response['data']['current']['weather']['tp']
+            aqi.append((city, air_quality, weather_temp))
     except:
         print('ERROR')
     return aqi
@@ -36,7 +37,7 @@ def create_table(cur, conn, data):
     '''This function creates the WeatherData table and inserts the sorted information from all of the cities cities to the table and
     ensures there is no duplicate data in the tables.'''
 
-    cur.execute("CREATE TABLE IF NOT EXISTS AirQualityData (ID INTEGER, City STRING, AirQuality INTEGER)")
+    cur.execute("CREATE TABLE IF NOT EXISTS AirQualityData (ID INTEGER, City STRING, AirQuality INTEGER, WeatherTemperature INTEGER)")
     cur.execute("SELECT * FROM AirQualityData")
     num = len(cur.fetchall())
     count = 0
@@ -46,7 +47,7 @@ def create_table(cur, conn, data):
         if cur.execute("SELECT City FROM AirQualityData WHERE City = ?", (elem[0],)).fetchone() == None:
             cur.execute("SELECT ID FROM RestaurantCities WHERE Cities = ?", (elem[0],))
             cityID = cur.fetchone()[0]
-            cur.execute("INSERT INTO AirQualityData (ID, City, AirQuality) VALUES (?, ?, ?)", (cityID, elem[0], elem[1]))
+            cur.execute("INSERT INTO AirQualityData (ID, City, AirQuality, WeatherTemperature) VALUES (?, ?, ?, ?)", (cityID, elem[0], elem[1], elem[2]))
             num = num + 1
             count = count + 1
     conn.commit()
