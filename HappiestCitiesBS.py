@@ -2,7 +2,8 @@
 
 from bs4 import BeautifulSoup
 import requests
-import unittest
+import sqlite3
+import os
 
 
 
@@ -29,37 +30,47 @@ def getTags():
 
             if content.text.startswith("Quality of life:"):
                 quality = content.text.replace("Quality of life:", "").strip()
-            
-        best_cities.append((tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip(), int(p), int(salary), float(quality)))
+        city_name = tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip()  
+        best_cities.append((city_name, int(p), int(salary), float(quality)))
+    #return best_cities
     print(best_cities)
             
 
-                
-            
-        
-#        best_cities.append((tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip(), tag.find_all('p')[2].text.replace("Population:", "").strip(), tag.find_all('p')[3].text.replace("Average annual salary:", "").strip(), tag.find_all('p')[4].text.replace("Quality of life:", "").strip(), tag.find_all('p')[5].text.replace("Value index:", "").strip()))
-       #best_cities.append((tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip(), float(population)))
 
-       #, tag.find_all('p')[2].text, tag.find_all('p')[3].text, tag.find_all('p')[4].text.replace("Quality of life:", "").strip(), tag.find_all('p')[5].text))
-    
-#
+def setUpDatabase(db_name):
+    '''This function will create a database named after the string 
+    input into the function.'''
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_name)
+    cur = conn.cursor()
+    return cur, conn
 
 
+def setUpCitiesTable(data, cur, conn):
+    cur.execute("DROP TABLE IF EXISTS CitiesData")
+    cur.execute("CREATE TABLE CitiesData (cities_id INTEGER PRIMARY KEY, population INTEGER, average_annual_salary INTEGER, quality_of_life FLOAT)")
+    cur.execute("SELECT * FROM CitiesData")
+    num = len(cur.fetchall())
+    count = 0
+    for elem in data:
+        if count == 25:
+            break
+        if cur.execute("SELECT cities_id FROM CitiesData WHERE cities_id = ?", (city_id,)).fetchone() == None:
+            cur.execute("SELECT ID FROM FROM RestaurantCities WHERE Cities = ?", (data[0]))
+            cur.execute('INSERT INTO CitiesData (CityName, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (city_id, data[1], data[2], data[3]))
+            num = num + 1
+            count = count + 1
+
+    conn.commit()
 
 
 def main():
-    getTags()
+    cur, conn = setUpDatabase(getTags)
 
 
-
-
-
-class TestAllMethods(unittest.TestCase):
-    def setUp(self):
-        self.soup = BeautifulSoup(requests.get('https://www.businessinsider.com/us-news-best-places-to-live-in-america-2016-3').text, 'html.parser')
-
+    
 
 
 if __name__ == "__main__":
     main()
-    unittest.main(verbosity = 2)
+
