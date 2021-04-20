@@ -14,18 +14,14 @@ def dataFromYelp(apiKey, locationList):
     for location in locationList: 
         baseURL = 'https://api.yelp.com/v3/businesses/search'
         headers = {'Authorization': 'Bearer %s' % apiKey}
-        # p = {'term' : 'restaurant', 'location' : location, 'sort_by' : 'review_count', 'sort_by' : 'rating', 'limit' : 50}
         p = {'term' : 'restaurant', 'location' : location, 'sort_by' : 'review_count', 'sort_by' : 'rating', 'limit' : 50}
 
         requestURL = requests.get(baseURL, headers = headers, params = p)
         data = json.loads(requestURL.text)
-        #print(data)
         yelpData = data['businesses']
-        # print(yelpData)
         for i in yelpData: 
             # if i['id'] not in information: 
             information.append((i['name'], i.get('price', ''), i['rating'], i['location']['zip_code'], i['location']['city']))  
-        # print(information)
     return information
 
 #sets up the database
@@ -34,45 +30,12 @@ def setUpDatabase(db_name):
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
-
-# def getRestaurantInfo(rest_info):
-#     #print(rest_info)
-#     #print('&**&&**&**&*&')
-#     restaurantName = [] 
-#     restaurantPrice = []
-#     restaurantRating = [] 
-#     restaurantZip = [] 
-#     for item in rest_info: 
-#         restaurantName.append(item[0])
-#         restaurantPrice.append(item[1])
-#         restaurantRating.append(item[2])
-#         restaurantZip.append(item[3])
-#     tupList = []
-#     x = 0 
-#     for x in range(len(restaurantName)): 
-#         tupList.append((restaurantName[x], restaurantPrice[x], restaurantRating[x], restaurantZip[x]))
-#         x+=1 
-#     #print(tupList)
-#     return tupList
    
 
 # Create a function called CreateYelpDatabase to insert the values of the list into the table called YelpData
 def CreateYelpDatabase(data, cur, conn):
     cur.execute('CREATE TABLE IF NOT EXISTS YelpData (RestaurantName TEXT, Price TEXT, Rating FLOAT, zipCode TEXT, CityID INTEGER)')
 
-    # restaurantName = [] #HOW DO I DO THIS SO I DONT HAVE TO REPEAT ALL OF THIS BECAUSE I HAVE IN FUNCTION ABOVE
-    # restaurantPrice = []
-    # restaurantRating = [] 
-    # restaurantZip = [] 
-    # for item in L: 
-    #     restaurantName.append(item[0])
-    #     restaurantPrice.append(item[1])
-    #     restaurantRating.append(item[2])
-    #     restaurantZip.append(item[3])
-    # print(restaurantName)
-    # print(restaurantPrice)
-    # cur.execute('SELECT RestaurantName FROM YelpData') #selects restaurant name from YelpData table 
-    # res_name_list = cur.fetchall() #trying to get the restaurant names already added to databae so we know what we can't repeat
 
     count = 0 
     for tup in data: 
@@ -99,21 +62,11 @@ def setUpCitiesTable(data, cur, conn):
             count += 1 #controlling for 25 items adding to database at time
     
     conn.commit()
-#zipcodeID connects this table to yelp table - strings of zipcodes takes up more space than numbers so  beneficial for repeating zipcodes
 
 
-    
-        
-    
-
-# data = dataFromYelp(apiKey, 'Ann Arbor')[0:20]
-# YelpDatabase(data)
-# getRestaurantInfo(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago']))
 cur, conn = setUpDatabase('YelpData.db')
 setUpCitiesTable(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
 CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
-# setUpDatabase('YelpData.db')
-
 conn.close()
     
 
