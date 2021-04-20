@@ -104,7 +104,7 @@ def main():
     LA = weather_data(API_KEY, la_latitude, la_longitude, start_date)
     CHI = weather_data(API_KEY, chi_latitude, chi_longitude, start_date)
     DET = weather_data(API_KEY, det_latitude, det_longitude, start_date)
-    NYC = weather_data(API_KEY, nyc_latitude, nyc_latitude, start_date)
+    NYC = weather_data(API_KEY, nyc_latitude, nyc_longitude, start_date)
     
     create_table(cur, conn, AA)
     create_table(cur, conn, LA)
