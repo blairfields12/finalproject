@@ -54,7 +54,6 @@ def create_table(cur, conn, data):
 
 
 def main():
-    # cur, conn = setUpDatabase('AirQuality.db')
     cur, conn = setUpDatabase('finalproject.db')
 
     
