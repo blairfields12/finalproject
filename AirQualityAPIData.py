@@ -23,16 +23,16 @@ def airqualitydata(API_KEY, city, state, country):
 
     print(response.get('data'))
 
-    base = response['data']['current']['pollution']['conc']
+    # base = response['data']['current']['pollution']['p1']
+    # base = response['pollution']
+    # print(base)
 
-    try:
-        for elem in base:
-            city = response['data']['city']
-            air_quality = base['aquis']
-            atmospheric_pressure = base['pr']
-            aqi.append((city, air_quality, atmospheric_pressure))
-    except:
-        print('ERROR')
+    # for elem in base:
+    city = response['data']['city']
+    air_quality = response['data']['current']['pollution']['aqius']
+    atmospheric_pressure = response['data']['current']['weather']['pr']
+    aqi.append((city, air_quality, atmospheric_pressure))
+    
     return aqi
 
 def create_table(cur, conn, data):
@@ -48,26 +48,28 @@ def create_table(cur, conn, data):
             break
         if cur.execute("SELECT City FROM WeatherData WHERE City = ?", (elem[0],)).fetchone() == None:
             cur.execute("SELECT ID FROM RestaurantCities WHERE Cities = ?", (elem[0],))
-            cityID = cur.fetchone()[0]
-            cur.execute("INSERT INTO AirQualityData (ID, City, AirQuality, AtmosphericPressure) VALUES (?, ?, ?, ?)", (cityID, elem[0], elem[1], elem[2]))
+            # cityID = cur.fetchone()[0]
+            cur.execute("INSERT INTO AirQualityData (City, AirQuality, AtmosphericPressure) VALUES (?, ?, ?)", (elem[0], elem[1], elem[2]))
             num = num + 1
             count = count + 1
     conn.commit()
 
 def main():
-    cur, conn = setUpDatabase('AirQuality.db')
+    # cur, conn = setUpDatabase('AirQuality.db')
+    cur, conn = setUpDatabase('finalproject.db')
+
     
     AA = airqualitydata(API_KEY, 'Ann Arbor', 'Michigan', 'USA')
     LA = airqualitydata(API_KEY, 'Los Angeles', 'California', 'USA')
     CHI = airqualitydata(API_KEY, 'Chicago', 'Illinois', 'USA')
     DET = airqualitydata(API_KEY, 'Detroit', 'Michigan', 'USA')
-    NYC = airqualitydata(API_KEY, 'New York', 'New York', 'USA')
+    # NYC = airqualitydata(API_KEY, 'New York', 'New York', 'USA')
 
     create_table(cur, conn, AA)
     create_table(cur, conn, LA)
     create_table(cur, conn, CHI)
     create_table(cur, conn, DET)
-    create_table(cur, conn, NYC)
+    # create_table(cur, conn, NYC)
 
 if __name__ == '__main__':
     main()
