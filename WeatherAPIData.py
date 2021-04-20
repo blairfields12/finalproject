@@ -24,22 +24,21 @@ nyc_longitude = 74.0060
 
 
 def setUpDatabase(db_name):
-    '''This function will create a database named after the string 
-    input into the function.'''
+    '''This function will create a database named after the string input into the function.'''
+    
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
 
 def weather_data(API_KEY, latitude, longitude, start_date):
-    '''This function calls the requests.get() method on the OpenWeather 
-    link and creates a list of tuples containing the temperature, forecast, 
-    humidity, and weather conditions for each citiy at a given unix time.'''
+    '''This function calls the requests.get() method on the OpenWeather link and creates a list of tuples containing the unix time (when the
+    data is retrieved from), city name, temperature, forecast, and humidity for each city filtered and sorted by the latitudes.'''
+    
     baseurl = "https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={}&lon={}&dt={}&appid={}".format(latitude, longitude, start_date, API_KEY)
     r = requests.get(baseurl)
     response = json.loads(r.text)
     data = []
-
     position = 0
    
     try:
@@ -75,13 +74,12 @@ def weather_data(API_KEY, latitude, longitude, start_date):
             position = position + 1
     except:
         print('Error')
-
     return data
 
 
 def create_table(cur, conn, data):
-    '''This function creates the WeatherData table and inserts the 
-    sorted information from both cities to the table.'''
+    '''This function creates the WeatherData table and inserts the sorted information from all of the cities cities to the table and
+    ensures there is no duplicate data in the tables.'''
 
     cur.execute("CREATE TABLE IF NOT EXISTS WeatherData (ID INTEGER PRIMARY KEY, Time INTEGER, City TEXT, Temperature FLOAT, Forecast TEXT, Humidity_Percentage FLOAT)")
     cur.execute("SELECT * FROM WeatherData")
@@ -94,10 +92,11 @@ def create_table(cur, conn, data):
             cur.execute("INSERT INTO WeatherData (ID, Time, City, Temperature, Forecast, Humidity_Percentage) VALUES (?, ?, ?, ?, ?, ?)", (num, elem[0], elem[1], elem[2], elem[3], elem[4]))
             num = num + 1
             count = count + 1
-
     conn.commit()
 
 def main():
+    '''The main function calls the function to set up the database, calls the weather_data function with the respective data for each city and
+    inserts all of the information into a table called WeatherData.'''
     cur, conn = setUpDatabase('WeatherData.db')
     start_date = 1618358400
     
