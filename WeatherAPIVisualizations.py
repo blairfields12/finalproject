@@ -19,6 +19,7 @@ with sqlite3.connect(path) as weather_data:
     chi_temperature = []
     det_temperature = []
     nyc_temperature = []
+    time_count = []
 
     for i in data:
         if i == 'Ann Arbor':
@@ -31,16 +32,21 @@ with sqlite3.connect(path) as weather_data:
             det_temperature.append(i[3])
         if i == 'New York City':
             nyc_temperature.append(i[3])
+        time_count.append(i[1])
 
 fig, ax = plt.subplots()
 
-y_count = 25
 
-ax.plot(y_count, aa_temperature, 'y', label = 'Ann Arbor, MI')
-ax.plot(y_count, la_temperature, 'b', label = 'Los Angeles, CA')
-ax.plot(y_count, chi_temperature, 'r', label = 'Chicago, IL')
-ax.plot(y_count, det_temperature, 'g', label = 'Detroit, MI')
-ax.plot(y_count, nyc_temperature, 'k', label = 'New York City, NY')
+ax.plot(time_count, aa_temperature, 'y', label = 'Ann Arbor, MI')
+ax.plot(time_count, la_temperature, 'b', label = 'Los Angeles, CA')
+ax.plot(time_count, chi_temperature, 'r', label = 'Chicago, IL')
+ax.plot(time_count, det_temperature, 'g', label = 'Detroit, MI')
+ax.plot(time_count, nyc_temperature, 'k', label = 'New York City, NY')
+
 ax.legend()
-ax.set_xlabel('Unix Time')
+ax.set_xlabel('Unix Tie')
 ax.set_ylabel('Temperature (Kelvin)')
+ax.set_title('Temperature Values for Ann Arbor vs. Los Angeles vs. Chicago vs. Detroit vs. NYC Over a 25 Hour Period')
+
+ax.grid()
+plt.show()
