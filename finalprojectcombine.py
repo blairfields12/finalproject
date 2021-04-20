@@ -5,6 +5,7 @@ import requests
 import sqlite3
 import os
 
+
 YelpAPIKey = 'kP35wj7sg11cJpUJDjT11YnTc_zqbIyoLmOcb0z98mWud37ESt5qV2d5InA2BGMe-XEceQ4M8n3D8zcLraN6qjRUEiWDcNEK9pWnFnLwCxZHpDbiXnzfLHql0GZ4YHYx'
 
 OpenWeatherAPIKey = '2c4debeef933141f65cb3c162b82970d'
@@ -34,6 +35,7 @@ def setUpDatabase(db_name):
     return cur, conn
 
 
+
 def dataFromYelp(apiKey, locationList):
     '''This function pulls data from the Yelp API and stores it in a list of tuples containing the a restaurant's name, price, rating, zip code and city.'''
 
@@ -52,6 +54,7 @@ def dataFromYelp(apiKey, locationList):
     return information
 
 
+
 def CreateYelpTable(data, cur, conn):
     '''This function creates the Yelp Table and inserts the all the values in the list of tuples into the respective columns.'''
 
@@ -67,6 +70,7 @@ def CreateYelpTable(data, cur, conn):
             count += 1 #controlling for 25 items adding to database at time
 
     conn.commit()
+
 
 
 def setUpCitiesTable(data, cur, conn): 
@@ -133,6 +137,7 @@ def weather_data(API_KEY, latitude, longitude, start_date):
     return data
 
 
+
 def create_table(cur, conn, data):
     '''This function creates the WeatherData table and inserts the sorted information from all of the cities cities to the table and
     ensures there is no duplicate data in the tables.'''
@@ -170,6 +175,7 @@ def main():
 
     setUpCitiesTable(dataFromYelp(YelpAPIKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
     CreateYelpTable(dataFromYelp(YelpAPIKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
+
 
 if __name__ == "__main__":
     main()
