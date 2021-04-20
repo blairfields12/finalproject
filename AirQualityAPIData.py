@@ -16,22 +16,26 @@ def setUpDatabase(db_name):
     return cur, conn
 
 def airqualitydata(API_KEY, country, state, city):
-    baseurl = 'http://api.airvisual.com/v2/city?city={{}}&state={{}}&country={{}}&key={{}}'.format(city, state, country, API_KEY)
+    baseurl = 'http://api.airvisual.com/v2/city?city={}&state={}&country={}&key={}'.format(city, state, country, API_KEY)
     r = requests.get(baseurl)
     response = json.loads(r.text)
     aqi = []
 
-    print(response['data']['city'])
-    print(response['data']['forecasts'][0]['pollution'])
-    try:
-        for elem in response['data']['forecasts']['current']['pollution']:
-            print(elem)
-            city = response['data']['city']
-            air_quality = response['pollution']['aquis']
-            pollutant_concentration = ['pollution']['p1']['conc']
-            aqi.append((city, air_quality, pollutant_concentration))
-    except:
-        print('ERROR')
+    # print(response['data']['city'])
+    print(response.get('data'))
+
+    base = response['data']['current']['pollution']['p2']
+    print(base)
+
+    # try:
+    #     for elem in response['data']['forecasts']['current']['pollution']:
+    #         print(elem)
+    #         city = response['data']['city']
+    #         air_quality = response['pollution']['aquis']
+    #         pollutant_concentration = ['pollution']['p1']['conc']
+    #         aqi.append((city, air_quality, pollutant_concentration))
+    # except:
+    #     print('ERROR')
     return aqi
 
 def create_table(cur, conn, data):
