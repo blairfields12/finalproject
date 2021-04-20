@@ -16,13 +16,16 @@ def setUpDatabase(db_name):
     return cur, conn
 
 def airqualitydata(API_KEY, country, state, city):
-    base_url = 'http://api.airvisual.com/v2/city?city={{}}&state={{}}&country={{}}&key={{}}'.format(city, state, country, API_KEY)
+    baseurl = 'http://api.airvisual.com/v2/city?city={{}}&state={{}}&country={{}}&key={{}}'.format(city, state, country, API_KEY)
     r = requests.get(baseurl)
     response = json.loads(r.text)
     aqi = []
 
+    print(response['data']['city'])
+    print(response['data']['forecasts'][0]['pollution'])
     try:
-        for elem in response['pollution']:
+        for elem in response['data']['forecasts']['current']['pollution']:
+            print(elem)
             city = response['data']['city']
             air_quality = response['pollution']['aquis']
             pollutant_concentration = ['pollution']['p1']['conc']
@@ -43,7 +46,7 @@ def create_table(cur, conn, data):
         if count == 5:
             break
         if cur.execute("SELECT City FROM WeatherData WHERE City = ?", (elem[0],)).fetchone() == None:
-            cur.execute("SELECT ID FROM RestaurantCities WHERE Cities = ?", (elem[0])
+            cur.execute("SELECT ID FROM RestaurantCities WHERE Cities = ?", (elem[0],))
             cityID = cur.fetchone()[0]
             cur.execute("INSERT INTO AirQualityData (ID, City, AirQuality, PollutantConcentration) VALUES (?, ?, ?, ?)", (cityID, elem[0], elem[1], elem[2]))
             num = num + 1
@@ -51,6 +54,9 @@ def create_table(cur, conn, data):
     conn.commit()
 
 def main():
+    cur, conn = setUpDatabase('AirQuality.db')
+    LA = airqualitydata(API_KEY, 'USA', 'California', 'Los Angeles')
+    create_table(cur, conn, LA)
 
 if __name__ == '__main__':
     main()
