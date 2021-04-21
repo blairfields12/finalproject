@@ -1,4 +1,4 @@
-#Yelp API Data
+#Yelp API Data, Weather API Data, AirQuality API Data
 
 import json
 import requests
