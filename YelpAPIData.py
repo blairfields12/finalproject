@@ -64,9 +64,70 @@ def setUpCitiesTable(data, cur, conn):
     conn.commit()
 
 
-cur, conn = setUpDatabase('YelpData.db')
+#Find the number of restaurants with each rating in two zip codes
+def PricesPerCityCount(cur, con, filepath): 
+    data = cur.execute('SELECT Price,cityID FROM YelpData').fetchall()
+    conn.commit()
+    #print(data)
+    with open(filepath, 'w', newline = '', encoding= 'utf-8') as f: 
+        f = csv.writer(f, delimiter = ',')
+
+        annArborprice1 = 0
+        NewYorkprice1 = 0 
+        annArborprice2 = 0 
+        NewYorkprice2 = 0 
+        annArborprice3 = 0 
+        NewYorkprice3 = 0 
+        annArborprice4 = 0 
+        NewYorkprice4 = 0 
+
+        for tup in data: 
+            if tup[0] == '$':
+                if tup[1] == 2:
+                    annArborprice1 += 1 
+                if tup[1] == 42: 
+                    NewYorkprice1 += 1 
+            if tup[0] == '$$':
+                if tup[1] == 2:
+                    annArborprice2 += 1 
+                if tup[1] == 42: 
+                    NewYorkprice2 += 1 
+
+            if tup[0] == '$$$':
+                if tup[1] == 2:
+                    annArborprice3 += 1 
+                if tup[1] == 42: 
+                    NewYorkprice3 += 1 
+            
+            if tup[0] == '$$$$':
+                if tup[1] == 2:
+                    annArborprice4 += 1 
+                if tup[1] == 42:
+                    NewYorkprice4 += 1
+        
+        # print('annArbor1 = ' + '' + str(annArborprice1))
+        # print('newYork1 = ' + '' + str(NewYorkprice1))
+        # print('annArbor2 = ' + '' + str(annArborprice2))
+        # print('newYork2 = ' + '' + str(NewYorkprice2))
+        # print('annArbor3 = ' + '' + str(annArborprice3))
+        # print('newYork3 = ' + '' + str(NewYorkprice3))
+        # print('annArbor4 = ' + '' + str(annArborprice4))
+        # print('newYork4 = ' + '' + str(NewYorkprice4))
+
+        #“Price per Person.” $= under $10. $$=11–30. $$$=31–60. $$$$= over $61 put as key on side of visualization 
+
+        priceCityData = (annArborprice1, NewYorkprice1, annArborprice2, NewYorkprice2, annArborprice3, NewYorkprice3, annArborprice4, NewYorkprice4)
+        f.writerow(['Ann Arbor $', 'New York $', 'Ann Arbor $$', 'New York $$', 'Ann Arbor $$$', 'New York $$$', 'Ann Arbor $$$$', 'New York $$$$'])
+        f.writerow(priceCityData)
+
+    
+
+
+
+cur, conn = setUpDatabase('YelpData2.db')
 setUpCitiesTable(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
 CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
+PricesPerCityCount(cur, conn,'PricesPerCityCount.csv')
 conn.close()
     
 
