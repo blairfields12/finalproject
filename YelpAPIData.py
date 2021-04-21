@@ -4,12 +4,15 @@ import json
 import requests
 import sqlite3
 import os
+import csv
+
 
 
 apiKey = 'kP35wj7sg11cJpUJDjT11YnTc_zqbIyoLmOcb0z98mWud37ESt5qV2d5InA2BGMe-XEceQ4M8n3D8zcLraN6qjRUEiWDcNEK9pWnFnLwCxZHpDbiXnzfLHql0GZ4YHYx'
 
-#getting data from the Yelp API
 def dataFromYelp(apiKey, locationList):
+    '''This function will create a database named after the string input into the function.'''
+
     information = [] 
     for location in locationList: 
         baseURL = 'https://api.yelp.com/v3/businesses/search'
@@ -24,16 +27,19 @@ def dataFromYelp(apiKey, locationList):
             information.append((i['name'], i.get('price', ''), i['rating'], i['location']['zip_code'], i['location']['city']))  
     return information
 
-#sets up the database
+
 def setUpDatabase(db_name):
+    '''This function pulls data from the Yelp API and stores it in a list of tuples containing the a restaurant's name, price, rating, zip code and city.'''
+
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
    
 
-# Create a function called CreateYelpDatabase to insert the values of the list into the table called YelpData
 def CreateYelpDatabase(data, cur, conn):
+    '''This function creates the Yelp Table and inserts the all the values in the list of tuples into the respective columns.'''
+
     cur.execute('CREATE TABLE IF NOT EXISTS YelpData (RestaurantName TEXT, Price TEXT, Rating FLOAT, zipCode TEXT, CityID INTEGER)')
 
 
@@ -51,6 +57,9 @@ def CreateYelpDatabase(data, cur, conn):
 
 #CreateCities table 
 def setUpCitiesTable(data, cur, conn): 
+    '''This function creates the Cities Table with the cities pulled from the list of tuples and creates the integer IDs for each city to be
+    used later on when joining the data.'''
+    
     cur.execute('CREATE TABLE IF NOT EXISTS RestaurantCities (ID INTEGER PRIMARY KEY, Cities TEXT)')
     count = 0 
    # print(data)
@@ -64,7 +73,7 @@ def setUpCitiesTable(data, cur, conn):
     conn.commit()
 
 
-#Find the number of restaurants with each rating in two zip codes
+#Find the number of restaurants with each rating in two zip codes and output results to a csv file 
 def PricesPerCityCount(cur, con, filepath): 
     data = cur.execute('SELECT Price,cityID FROM YelpData').fetchall()
     conn.commit()
@@ -124,7 +133,7 @@ def PricesPerCityCount(cur, con, filepath):
 
 
 
-cur, conn = setUpDatabase('YelpData.db')
+cur, conn = setUpDatabase('finalprojectdatabase.db')
 setUpCitiesTable(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
 CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
 PricesPerCityCount(cur, conn,'PricesPerCityCount.csv')
