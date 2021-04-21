@@ -94,10 +94,13 @@ def create_table(cur, conn, data):
             count = count + 1
     conn.commit()
 
+
+
+
 def main():
     '''The main function calls the function to set up the database, calls the weather_data function with the respective data for each city and
     inserts all of the information into a table called WeatherData.'''
-    cur, conn = setUpDatabase('WeatherData.db')
+    cur, conn = setUpDatabase('finalprojectdatabase.db')
     start_date = 1618873200
     
     AA = weather_data(API_KEY, annarbor_latitude, annarbor_longitude, start_date)
