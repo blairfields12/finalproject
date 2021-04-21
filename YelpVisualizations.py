@@ -8,11 +8,13 @@ import os
 import sqlite3
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
-path = os.path.join(base_dir, '/Users/blairfields/finalprojectfolder/finalproject/finalproject.db')
+path = os.path.join(base_dir, '/Users/blairfields/Desktop/SI206/finalprojectfolder/finalproject/finalprojectdatabase.db')
 
 with sqlite3.connect(path) as Yelpdatabase:
     cur = Yelpdatabase.cursor()
     cur.execute("SELECT * FROM YelpData")
     data = cur.fetchall()
+    print(data)
 
-    
+ 
+

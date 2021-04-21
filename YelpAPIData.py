@@ -59,7 +59,7 @@ def CreateYelpDatabase(data, cur, conn):
 def setUpCitiesTable(data, cur, conn): 
     '''This function creates the Cities Table with the cities pulled from the list of tuples and creates the integer IDs for each city to be
     used later on when joining the data.'''
-    
+
     cur.execute('CREATE TABLE IF NOT EXISTS RestaurantCities (ID INTEGER PRIMARY KEY, Cities TEXT)')
     count = 0 
    # print(data)
@@ -131,7 +131,7 @@ def PricesPerCityCount(cur, con, filepath):
 
     
 
-
+#socioeconomic status for each city to see if restaurants that are pricer have more wealthy people in that city 
 
 cur, conn = setUpDatabase('finalprojectdatabase.db')
 setUpCitiesTable(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
