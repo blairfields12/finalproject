@@ -124,7 +124,7 @@ def PricesPerCityCount(cur, con, filepath):
 
 
 
-cur, conn = setUpDatabase('YelpData2.db')
+cur, conn = setUpDatabase('YelpData.db')
 setUpCitiesTable(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
 CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
 PricesPerCityCount(cur, conn,'PricesPerCityCount.csv')
