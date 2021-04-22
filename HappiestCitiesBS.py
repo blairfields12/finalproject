@@ -45,17 +45,16 @@ def setUpDatabase(db_name):
 
 
 def setUpCitiesTable(data, cur, conn):
-    cur.execute("DROP TABLE IF EXISTS CitiesData")
-    cur.execute("CREATE TABLE CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_annual_salary INTEGER, Quality_of_life FLOAT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_annual_salary INTEGER, Quality_of_life FLOAT)")
     cur.execute("SELECT * FROM CitiesData")
     num = len(cur.fetchall())
     count = 0
     for elem in data:
         if count == 25:
             break
-        if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (data[0][0],)).fetchone() == None:
+        if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (elem[0],)).fetchone() == None:
             #cur.execute("SELECT ID FROM RestaurantCities WHERE Cities = ?", (data[0]))
-            cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (data[0][0], data[0][1], data[0][2], data[0][3]))
+            cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
             num = num + 1
             count = count + 1
 
