@@ -30,8 +30,8 @@ def getTags():
 
             if content.text.startswith("Quality of life:"):
                 quality = content.text.replace("Quality of life:", "").strip()
-        city_name = tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip()  
-        best_cities.append((city_name, int(p), int(salary), float(quality)))
+        city_id = tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip()  
+        best_cities.append((city_id, int(p), int(salary), float(quality)))
     return best_cities
     #print(best_cities)
             
@@ -46,24 +46,25 @@ def setUpDatabase(db_name):
 
 def setUpCitiesTable(data, cur, conn):
     cur.execute("DROP TABLE IF EXISTS CitiesData")
-    cur.execute("CREATE TABLE CitiesData (cities_id INTEGER PRIMARY KEY, population INTEGER, average_annual_salary INTEGER, quality_of_life FLOAT)")
+    cur.execute("CREATE TABLE CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_annual_salary INTEGER, Quality_of_life FLOAT)")
     cur.execute("SELECT * FROM CitiesData")
     num = len(cur.fetchall())
     count = 0
     for elem in data:
         if count == 25:
             break
-        if cur.execute("SELECT cities_id FROM CitiesData WHERE cities_id = ?", (city_id,)).fetchone() == None:
-            cur.execute("SELECT ID FROM FROM RestaurantCities WHERE Cities = ?", (data[0]))
-            cur.execute('INSERT INTO CitiesData (CityName, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (city_id, data[1], data[2], data[3]))
+        if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (data[0][0],)).fetchone() == None:
+            #cur.execute("SELECT ID FROM RestaurantCities WHERE Cities = ?", (data[0]))
+            cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (data[0][0], data[0][1], data[0][2], data[0][3]))
             num = num + 1
             count = count + 1
 
     conn.commit()
 
 
+
 def main():
-    cur, conn = setUpDatabase(getTags)
+    cur, conn = setUpDatabase('cities.db')
     data = getTags()
     setUpCitiesTable(data, cur, conn)
 
