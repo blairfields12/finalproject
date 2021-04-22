@@ -44,17 +44,21 @@ def create_table(cur, conn, data):
     for elem in data:
         if count == 5:
             break
+        print(elem[0])
         if cur.execute("SELECT City FROM AirQualityData WHERE City = ?", (elem[0],)).fetchone() == None:
             cur.execute("SELECT ID FROM RestaurantCities WHERE Cities = ?", (elem[0],))
+            # cur.execute('SELECT * FROM RestaurantCities')
+            # y = cur.fetchall()
             cityID = cur.fetchone()[0]
-            cur.execute("INSERT INTO AirQualityData (ID, City, AirQuality, WeatherTemperature) VALUES (?, ?, ?, ?)", (cityID, elem[0], elem[1], elem[2]))
+            print(cityID)
+            cur.execute("INSERT INTO AirQualityData (City, AirQuality, WeatherTemperature) VALUES (?, ?, ?)", (cityID, elem[1], elem[2]))
             num = num + 1
             count = count + 1
     conn.commit()
 
 
 def main():
-    cur, conn = setUpDatabase('finalproject.db')
+    cur, conn = setUpDatabase('finalprojectdatabase.db')
 
     
     AA = airqualitydata(API_KEY, 'Ann Arbor', 'Michigan', 'USA')
@@ -71,3 +75,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
