@@ -69,11 +69,11 @@ NYRatingsCount = [0, 19, 30]
 
 x = np.arange(len(labels))  # the label locations
 width = 0.35  # the width of the bars
-# opacity = 0.8
+opacity = 0.4
 
 fig, ax = plt.subplots()
-rects1 = ax.bar(x - width/2, AARatingsCount, width, label='Ann Arbor')
-rects2 = ax.bar(x + width/2, NYRatingsCount, width, label='Los Angeles')
+rects1 = ax.bar(x - width/2, AARatingsCount, width, alpha = opacity, color = 'blue', label='Ann Arbor')
+rects2 = ax.bar(x + width/2, NYRatingsCount, width, alpha = opacity, color = 'red', label='Los Angeles')
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
 ax.set_ylabel('Number of Restaurants With Rating')
