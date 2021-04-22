@@ -32,14 +32,12 @@ def getTags():
                 quality = content.text.replace("Quality of life:", "").strip()
         city_name = tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip()  
         best_cities.append((city_name, int(p), int(salary), float(quality)))
-    #return best_cities
-    print(best_cities)
+    return best_cities
+    #print(best_cities)
             
 
 
 def setUpDatabase(db_name):
-    '''This function will create a database named after the string 
-    input into the function.'''
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
@@ -66,6 +64,8 @@ def setUpCitiesTable(data, cur, conn):
 
 def main():
     cur, conn = setUpDatabase(getTags)
+    data = getTags()
+    setUpCitiesTable(data, cur, conn)
 
 
     
