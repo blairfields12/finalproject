@@ -82,8 +82,6 @@ ax.set_xticks(x)
 ax.set_xticklabels(labels)
 ax.legend()
 
-# ax.bar_label(rects1, padding=3)
-# ax.bar_label(rects2, padding=3)
 
 fig.tight_layout()
 
