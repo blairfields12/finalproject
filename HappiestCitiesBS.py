@@ -6,7 +6,6 @@ import sqlite3
 import os
 
 
-
 def getTags():
     url = 'https://www.businessinsider.com/us-news-best-places-to-live-in-america-2016-3'
     r = requests.get(url)
@@ -36,7 +35,6 @@ def getTags():
     #print(best_cities)
             
 
-
 def setUpDatabase(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
@@ -63,12 +61,9 @@ def setUpCitiesTable(data, cur, conn):
 
 
 def main():
-    cur, conn = setUpDatabase('cities.db')
+    cur, conn = setUpDatabase('finalprojectdatabase.db')
     data = getTags()
     setUpCitiesTable(data, cur, conn)
-
-
-    
 
 
 if __name__ == "__main__":
