@@ -1,4 +1,5 @@
 #Weather API Visualizations
+
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,7 +8,7 @@ import os
 import sqlite3
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
-path = os.path.join(base_dir, '/Users/miaschaftel/finalproject/WeatherData.db')
+path = os.path.join(base_dir, '/Users/miaschaftel/finalproject/finalprojectdatabase.db')
 
 with sqlite3.connect(path) as weather_data:
     cur = weather_data.cursor()
