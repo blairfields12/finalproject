@@ -32,7 +32,6 @@ def getTags():
         city_id = tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip()  
         best_cities.append((city_id, int(p), int(salary), float(quality)))
     return best_cities
-    #print(best_cities)
             
 
 def setUpDatabase(db_name):
@@ -51,13 +50,11 @@ def setUpCitiesTable(data, cur, conn):
         if count == 25:
             break
         if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (elem[0],)).fetchone() == None:
-            #cur.execute("SELECT ID FROM RestaurantCities WHERE Cities = ?", (data[0]))
             cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
             num = num + 1
             count = count + 1
 
     conn.commit()
-
 
 
 def main():
