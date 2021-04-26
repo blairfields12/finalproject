@@ -1,4 +1,4 @@
-#50 best places to live in America ranked
+#50 Cities Data
 
 from bs4 import BeautifulSoup
 import requests
@@ -86,4 +86,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
