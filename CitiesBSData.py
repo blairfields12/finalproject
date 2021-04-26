@@ -43,24 +43,8 @@ def setUpDatabase(db_name):
     return cur, conn
 
 
-# def setUpCitiesTable(data, cur, conn):
-#     cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_annual_salary INTEGER, Quality_of_life FLOAT)")
-#     cur.execute("SELECT * FROM CitiesData")
-#     num = len(cur.fetchall())
-#     count = 0
-#     for elem in data:
-#         if count == 25:
-#             break
-#         if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (elem[0],)).fetchone() == None:
-#             cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
-#             num = num + 1
-#             count = count + 1
-
-#     conn.commit()
-
-
 def setUpCitiesTable(data, cur, conn):
-    cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_annual_salary INTEGER, Quality_of_life FLOAT, CityID INTEGER)")
+    cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_Annual_Salary INTEGER, Quality_of_Life FLOAT)")
     cur.execute("SELECT * FROM CitiesData")
     num = len(cur.fetchall())
     count = 0
@@ -68,14 +52,29 @@ def setUpCitiesTable(data, cur, conn):
         if count == 25:
             break
         if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (elem[0],)).fetchone() == None:
-            cur.execute('SELECT ID FROM RestaurantCities WHERE Cities == ?', (elem[0],)) 
-            cityID = cur.fetchone()[0]
-            cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life, CityID) VALUES (?, ?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3], cityID))
+            cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_Annual_Salary, Quality_of_Life) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
             num = num + 1
             count = count + 1
 
     conn.commit()
 
+
+# def setUpCitiesTable(data, cur, conn):
+#     cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_Annual_Salary INTEGER, Quality_of_Life FLOAT, CityID INTEGER)")
+#     cur.execute("SELECT * FROM CitiesData")
+#     num = len(cur.fetchall())
+#     count = 0
+#     for elem in data:
+#         if count == 25:
+#             break
+#         if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (elem[0],)).fetchone() == None:
+#             cur.execute('SELECT ID FROM RestaurantCities WHERE Cities == ?', (elem[0],)) 
+#             cityID = cur.fetchone()[0]
+#             cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life, CityID) VALUES (?, ?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3], cityID))
+#             num = num + 1
+#             count = count + 1
+
+#     conn.commit()
 
 
 def main():
