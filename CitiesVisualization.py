@@ -10,8 +10,11 @@ import csv
 from matplotlib import style
 from numpy import genfromtxt
 
-base_dir = os.path.dirname(os.path.abspath(__file__))
-path = os.path.join(base_dir, '/Users/blairfields/Desktop/SI206/finalprojectfolder/finalproject/finalprojectdatabase.db')
+# base_dir = os.path.dirname(os.path.abspath(__file__))
+# path = os.path.join(base_dir, '/Users/blairfields/Desktop/SI206/finalprojectfolder/finalproject/finalprojectdatabase.db')
+
+base_dir = os.path.dirname(os.path.realpath(__file__))
+path = (base_dir + '/finalprojectdatabase.db')
 
 with sqlite3.connect(path) as finalprojectdatabase:
     cur = finalprojectdatabase.cursor()
