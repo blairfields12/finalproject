@@ -14,7 +14,7 @@ with sqlite3.connect(path) as Yelpdatabase:
     cur = Yelpdatabase.cursor()
     cur.execute("SELECT * FROM YelpData")
     data = cur.fetchall()
-    # print(data)
+    print(data)
 
     AnnArborRatings = [] 
     NewYorkRatings = [] 
@@ -53,14 +53,14 @@ with sqlite3.connect(path) as Yelpdatabase:
         if rating == 5.0: 
             NY_rated_five.append(rating)
     
-    print("AA 4.0 ratings: " + str(len(AA_rated_four)))
-    print("NY 4.0 ratings: " + str(len(NY_rated_four)))
+    # print("AA 4.0 ratings: " + str(len(AA_rated_four)))
+    # print("NY 4.0 ratings: " + str(len(NY_rated_four)))
 
-    print("AA 4.5 ratings: " + str(len(AA_rated_four_five)))
-    print("NY 4.5 ratings: " + str(len(NY_rated_four_five)))
+    # print("AA 4.5 ratings: " + str(len(AA_rated_four_five)))
+    # print("NY 4.5 ratings: " + str(len(NY_rated_four_five)))
 
-    print("AA 5.0 ratings: " + str(len(AA_rated_five)))
-    print("NY 5.0 ratings: " + str(len(NY_rated_five)))
+    # print("AA 5.0 ratings: " + str(len(AA_rated_five)))
+    # print("NY 5.0 ratings: " + str(len(NY_rated_five)))
 
 '''Plotting the data'''
 labels = ['4.0', '4.5', '5.0']
