@@ -22,6 +22,18 @@ det_longitude = 83.0458
 nyc_latitude = 40.7128
 nyc_longitude = 74.0060
 
+nville_latitude = 36.1627
+nville_longitude = 86.7816
+
+ind_latitude = 39.7684
+ind_longitude = 86.1581
+
+gr_latitude = 42.9634
+gr_longitude = 85.6681
+
+pa_latidude = 40.0379
+pa_longitude = 76.3055
+
 
 def setUpDatabase(db_name):
     '''This function will create a database named after the string input into the function.'''
@@ -108,12 +120,21 @@ def main():
     CHI = weather_data(API_KEY, chi_latitude, chi_longitude, start_date)
     DET = weather_data(API_KEY, det_latitude, det_longitude, start_date)
     NYC = weather_data(API_KEY, nyc_latitude, nyc_longitude, start_date)
+    NVILLE = weather_data(API_KEY, nville_latitude, nville_longitude, start_date)
+    IND = weather_data(API_KEY, ind_latitude, ind_longitude, start_date)
+    GR = weather_data(API_KEY, gr_latitude, gr_longitude, start_date)
+    PA = weather_data(API_KEY, pa_latidude, pa_longitude, start_date)
+    
     
     create_table(cur, conn, AA)
     create_table(cur, conn, LA)
     create_table(cur, conn, CHI)
     create_table(cur, conn, DET)
     create_table(cur, conn, NYC)
+    create_table(cur, conn, NVILLE)
+    create_table(cur, conn, IND)
+    create_table(cur, conn, GR)
+    create_table(cur, conn, PA)
 
 if __name__ == "__main__":
     main()
