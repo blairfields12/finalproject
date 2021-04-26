@@ -29,7 +29,9 @@ def getTags():
 
             if content.text.startswith("Quality of life:"):
                 quality = content.text.replace("Quality of life:", "").strip()
-        city_id = tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip()  
+        cit = tag.find('h2', class_="slide-title-text").text[2:].replace(".", "").strip()  
+        city = cit.split(',')
+        city_id = city[0]
         best_cities.append((city_id, int(p), int(salary), float(quality)))
     return best_cities
             
@@ -41,8 +43,24 @@ def setUpDatabase(db_name):
     return cur, conn
 
 
+# def setUpCitiesTable(data, cur, conn):
+#     cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_annual_salary INTEGER, Quality_of_life FLOAT)")
+#     cur.execute("SELECT * FROM CitiesData")
+#     num = len(cur.fetchall())
+#     count = 0
+#     for elem in data:
+#         if count == 25:
+#             break
+#         if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (elem[0],)).fetchone() == None:
+#             cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
+#             num = num + 1
+#             count = count + 1
+
+#     conn.commit()
+
+
 def setUpCitiesTable(data, cur, conn):
-    cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_annual_salary INTEGER, Quality_of_life FLOAT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_annual_salary INTEGER, Quality_of_life FLOAT, CityID INTEGER)")
     cur.execute("SELECT * FROM CitiesData")
     num = len(cur.fetchall())
     count = 0
@@ -50,11 +68,14 @@ def setUpCitiesTable(data, cur, conn):
         if count == 25:
             break
         if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (elem[0],)).fetchone() == None:
-            cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
+            cur.execute('SELECT ID FROM RestaurantCities WHERE Cities == ?', (elem[0],)) 
+            cityID = cur.fetchone()[0]
+            cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life, CityID) VALUES (?, ?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3], cityID))
             num = num + 1
             count = count + 1
 
     conn.commit()
+
 
 
 def main():
@@ -65,4 +86,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
