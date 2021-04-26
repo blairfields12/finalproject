@@ -26,7 +26,7 @@ def convertFromKelvinToCelciusAndFahrenheit():
     for tup in data: 
         for i in tup: 
             kelvinTemp.append(i)
-    print(kelvinTemp)
+    # print(kelvinTemp)
     # print(data2)
     
      # C = K - 273.15
@@ -53,15 +53,16 @@ def convertFromKelvinToCelciusAndFahrenheit():
         
             # temps = (kelvinTemp, celciusTemp, FahrenheitTemp)
             
-            f.writerow(temps)   
+            f.writerow(temps)  
 
-
-
-
-       
-
-
+def weatherVisualization(): 
+    with sqlite3.connect(path) as weather_data:
+        cur = weather_data.cursor()
+        data = cur.execute("SELECT * FROM WeatherData").fetchall()
+    print(data)
+    
 
 convertFromKelvinToCelciusAndFahrenheit()
+weatherVisualization()
 
 
