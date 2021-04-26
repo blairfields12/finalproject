@@ -114,15 +114,7 @@ def PricesPerCityCount(cur, con, filepath):
                 if tup[1] == 42:
                     NewYorkprice4 += 1
         
-        # print('annArbor1 = ' + '' + str(annArborprice1))
-        # print('newYork1 = ' + '' + str(NewYorkprice1))
-        # print('annArbor2 = ' + '' + str(annArborprice2))
-        # print('newYork2 = ' + '' + str(NewYorkprice2))
-        # print('annArbor3 = ' + '' + str(annArborprice3))
-        # print('newYork3 = ' + '' + str(NewYorkprice3))
-        # print('annArbor4 = ' + '' + str(annArborprice4))
-        # print('newYork4 = ' + '' + str(NewYorkprice4))
-
+        
         #“Price per Person.” $= under $10. $$=11–30. $$$=31–60. $$$$= over $61 put as key on side of visualization 
 
         priceCityData = (annArborprice1, NewYorkprice1, annArborprice2, NewYorkprice2, annArborprice3, NewYorkprice3, annArborprice4, NewYorkprice4)
@@ -134,8 +126,8 @@ def PricesPerCityCount(cur, con, filepath):
 #socioeconomic status for each city to see if restaurants that are pricer have more wealthy people in that city 
 
 cur, conn = setUpDatabase('finalprojectdatabase.db')
-setUpCitiesTable(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
-CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York']), cur, conn)
+setUpCitiesTable(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York', 'Indianapolis', 'Nashville', 'Grand Rapids', 'Lancaster']), cur, conn)
+CreateYelpDatabase(dataFromYelp(apiKey, ['Ann Arbor', 'Los Angeles', 'Chicago', 'Detroit', 'New York', 'Indianapolis', 'Nashville', 'Grand Rapids', 'Lancaster']), cur, conn)
 PricesPerCityCount(cur, conn,'PricesPerCityCount.csv')
 conn.close()
     
