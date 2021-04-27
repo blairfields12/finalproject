@@ -15,7 +15,6 @@ from numpy import genfromtxt
 import pandas as pd 
 
 
-
 '''––––––––––––––––––––––––––––––––––––––––––––––––––––-––––– Global data being used to run functions ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
 YELP_KEY = 'kP35wj7sg11cJpUJDjT11YnTc_zqbIyoLmOcb0z98mWud37ESt5qV2d5InA2BGMe-XEceQ4M8n3D8zcLraN6qjRUEiWDcNEK9pWnFnLwCxZHpDbiXnzfLHql0GZ4YHYx'
 WEATHER_KEY = '2c4debeef933141f65cb3c162b82970d'
