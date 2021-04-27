@@ -218,19 +218,26 @@ def setUpCitiesTable(data, cur, conn):
 '''–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– CALCULATIONS ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
 def convertFromKelvinToCelsiusAndFahrenheit(cur, conn, filepath):
     '''Converting the Kelvin input temperature to Celsius and Fahrenheit and ouputting the results into a CSV file.'''
-    cur.execute('SELECT WeatherData.Temperature FROM WeatherData')
+    cur.execute('SELECT WeatherData.Temperature, WeatherData.City, WeatherData.Time FROM WeatherData')
     data = cur.fetchall()
     conn.commit()
 
     kelvinTemp = []
     for tup in data: 
-        for i in tup: 
-            kelvinTemp.append(i)
+        kelvinTemp.append(tup[0])
 
     celsiusTemp = []
     for i in kelvinTemp:
         c = i - 273.15
         celsiusTemp.append((c))
+
+    cityname = []
+    for tup in data:
+        cityname.append(tup[1])
+
+    times = []
+    for tup in data:
+        times.append(tup[2])
 
     '''Converting temperatures in degrees Celsius to Fahrenheit, multiply by 1.8 (or 9/5) and add 32.'''
     FahrenheitTemp = [] 
@@ -240,10 +247,11 @@ def convertFromKelvinToCelsiusAndFahrenheit(cur, conn, filepath):
 
     with open(filepath, 'w', newline = '', encoding= 'utf-8') as f: 
         f = csv.writer(f, delimiter = ',')
-        f.writerow(['Temp in Kelvin', 'Temp in Celsius', 'Temp in Fahrenheit'])
+        f.writerow(['City Name', 'Time in Unix', 'Temp in Kelvin', 'Temp in Celsius', 'Temp in Fahrenheit'])
         count = 0
+        
         for i in kelvinTemp:
-            temps = (kelvinTemp[count], celsiusTemp[count], FahrenheitTemp[count])
+            temps = (cityname[count], times[count], kelvinTemp[count], celsiusTemp[count], FahrenheitTemp[count])
             count += 1
             f.writerow(temps)
 
