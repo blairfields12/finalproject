@@ -346,31 +346,25 @@ def joinCitiesData(cur, conn):
 def weather_visualization(cur):
     data = cur.execute("SELECT * FROM WeatherData").fetchall()
 
+    times = []
     for item in data:
-        print(item)
+        if item[1] not in times:
+            times.append(item[1])
     
     AA_data = []
-    for item in data: 
-        if 'Ann Arbor' in item: 
-            AA_data.append(item)
-
     LA_data = []
-    for item in data: 
-        if "Los Angeles" in item: 
-            LA_data.append(item)
-    
     Chi_data = []
-    for item in data: 
-        if "Chicago" in item: 
-            Chi_data.append(item)
-
     Det_data = []
-    for item in data: 
-        if "Detroit" in item: 
-            Det_data.append(item)
-
     NYC_data = []
     for item in data: 
+        if 'Ann Arbor' in item: 
+            AA_data.append(item) 
+        if "Los Angeles" in item: 
+            LA_data.append(item)
+        if "Chicago" in item: 
+            Chi_data.append(item)
+        if "Detroit" in item: 
+            Det_data.append(item)
         if "New York City" in item: 
             NYC_data.append(item)
     
@@ -379,79 +373,40 @@ def weather_visualization(cur):
     chi_temperature = []
     det_temperature = []
     nyc_temperature = []
-    aa_time = []
-    la_time = [] 
-    chi_time = [] 
-    det_time = [] 
-    nyc_time = [] 
+
 
     for i in AA_data: 
         aa_temperature.append(i[3])
-        aa_time.append(i[1])
 
     for i in LA_data: 
         la_temperature.append(i[3])
-        la_time.append(i[1])
 
     for i in Chi_data: 
         chi_temperature.append(i[3])
-        chi_time.append(i[1])
 
     for i in Det_data: 
         det_temperature.append(i[3])
-        det_time.append(i[1])
     
     for i in NYC_data: 
         nyc_temperature.append(i[3])
-        nyc_time.append(i[1])
 
 
     '''Plotting the data'''
+    fig, ax = plt.subplots()
 
-    time2 = aa_time[1]
-    time3 = aa_time[2]
-    time4 = aa_time[3]
-    time5 = aa_time[4]
-    time6 = aa_time[5]
-
-    f, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5)
-    f.suptitle('Temperature Values for Ann Arbor vs. Los Angeles vs. Chicago \n vs. Detroit vs. NYC Over a 25 Hour Period', fontsize= 10)
-
-    x = np.arange(1,5)
-
-    ax1.plot(aa_time, aa_temperature, 'y', label = 'Ann Arbor, MI')
-
-    ax1.tick_params(axis='x', labelsize=6)
-    ax1.tick_params(axis='y', labelsize=6)
-    x_axis = ax1.axes.get_xaxis()
-    x_axis.set_visible(False)
-
-
-    ax2.plot(la_time, la_temperature, 'b', label = 'Los Angeles, CA')
-    ax2.tick_params(axis='x', labelsize=6)
-    ax2.tick_params(axis='y', labelsize=6)
-    x_axis = ax2.axes.get_xaxis()
-    x_axis.set_visible(False)
-
-    ax3.plot(chi_time, chi_temperature, 'r', label = 'Chicago, IL')
-    ax3.tick_params(axis='x', labelsize=6)
-    ax3.tick_params(axis='y', labelsize=6)
-    x_axis = ax3.axes.get_xaxis()
-    x_axis.set_visible(False)
-
-    ax4.plot(det_temperature, 'g', label = 'Detroit, MI')
-    ax4.tick_params(axis='x', labelsize=6)
-    ax4.tick_params(axis='y', labelsize=6)
-    x_axis = ax4.axes.get_xaxis()
-    x_axis.set_visible(False)
-
-    ax5.plot(nyc_time, nyc_temperature, 'k', label = 'New York City, NY')
-    ax5.tick_params(axis='x', labelsize=6)
-    ax5.tick_params(axis='y', labelsize=6)
-
-    plt.legend()
-    plt.grid(True)
+    ax.plot(times, aa_temperature, 'y', label = 'Ann Arbor')
+    ax.plot(times, la_temperature, 'r', label = 'Los Angeles')
+    ax.plot(times, chi_temperature, 'g', label = 'Chicago')
+    ax.plot(times, det_temperature, 'b', label = 'Detroit')
+    ax.plot(times, nyc_temperature, 'k', label = 'NYC')
+    ax.legend()
+    ax.set_ylabel('Temperature in Kelvin')
+    ax.set_xlabel('Time in UNIX')
+    ax.set_title('Temperature Values for Ann Arbor vs. Los Angeles vs. Chicago \n vs. Detroit vs. NYC Over a 25 Hour Period', fontsize= 10)
+    ax.grid()
     plt.show()
+
+
 
 
 
