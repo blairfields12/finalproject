@@ -201,7 +201,7 @@ def getTags():
 
 def setUpCitiesTable(data, cur, conn):
     '''This function creates the CitiesData Table with the cities pulled from the list of tuples and sorts the data into the respective columns.'''
-    cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_Annual_Salary INTEGER, Quality_of_Life FLOAT, CityID INTEGER)")
+    cur.execute("CREATE TABLE IF NOT EXISTS CitiesData (City_Name TEXT PRIMARY KEY, Population INTEGER, Average_Annual_Salary INTEGER, Quality_of_Life FLOAT)")
     cur.execute("SELECT * FROM CitiesData")
     num = len(cur.fetchall())
     count = 0
@@ -209,14 +209,9 @@ def setUpCitiesTable(data, cur, conn):
         if count == 25:
             break
         if cur.execute("SELECT City_Name FROM CitiesData WHERE City_Name = ?", (elem[0],)).fetchone() == None:
-            try: 
-                cur.execute('SELECT ID FROM RestaurantCities WHERE Cities = ?', (elem[0],)) 
-                cityID = cur.fetchone()[0]
-                cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life, CityID) VALUES (?, ?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3], cityID))
-                num = num + 1
-                count = count + 1
-            except: 
-                cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
+            cur.execute('INSERT INTO CitiesData (City_Name, Population, Average_annual_salary, Quality_of_life) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
+            num = num + 1
+            count = count + 1
     conn.commit()
 
 
@@ -339,13 +334,11 @@ def salary_quality(cur, conn, filepath):
 
 '''–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– JOIN –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
 def joinCitiesData(cur, conn):
-    cur.execute("SELECT Quality_of_Life, Average_Annual_Salary, Population FROM CitiesData JOIN RestaurantCities ON trim(CitiesData.CityID) = trim(RestaurantCities.ID)")
-    conn.commit()
+    cur.execute("SELECT Quality_of_Life, Average_Annual_Salary, Population FROM CitiesData JOIN RestaurantCities ON trim(CitiesData.City_Name) = trim(RestaurantCities.Cities)")
     joined = cur.fetchall()
     for x in joined: 
         print(x)
-    cur.execute("INSERT INTO RestaurantCities ") 
-    cur.close()
+    conn.commit()
 
 
 
@@ -353,6 +346,9 @@ def joinCitiesData(cur, conn):
 def weather_visualization(cur):
     data = cur.execute("SELECT * FROM WeatherData").fetchall()
 
+    for item in data:
+        print(item)
+    
     AA_data = []
     for item in data: 
         if 'Ann Arbor' in item: 
@@ -766,12 +762,15 @@ def main():
     joinCitiesData(cur, conn)
 
 
-
     '''Calling all visualization functions.'''
     weather_visualization(cur)
     yelp_visualization(cur)
     yelp_visualization2(cur)
     cities_visualization(cur)
+
+
+    cur.close()
+
 
 if __name__ == "__main__":
     main()
