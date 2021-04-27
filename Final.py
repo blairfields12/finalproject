@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 from matplotlib import style
 import numpy as np
 from numpy import genfromtxt
-import plotly.express as px
 import pandas as pd 
 
 
@@ -131,7 +130,6 @@ def dataFromYelp(apiKey, locationList):
         data = json.loads(requestURL.text)
         yelpData = data['businesses']
         for i in yelpData: 
-            # if i['id'] not in information: 
             information.append((i['name'], i.get('price', ''), i['rating'], i['location']['zip_code'], i['location']['city']))  
     return information
 
@@ -256,7 +254,7 @@ def convertFromKelvinToCelsiusAndFahrenheit(cur, conn, filepath):
             f.writerow(temps)
 
 
-def PricesPerCityCount(cur, con, filepath): 
+def PricesPerCityCount(cur, conn, filepath): 
     '''Calculating the number of restaurants with each price ($, $$, $$$, $$$) in two zip codes and outputting the results into a CSV file.'''
     data = cur.execute('SELECT Price,cityID FROM YelpData').fetchall()
     conn.commit()
@@ -314,7 +312,6 @@ def salary_quality(cur, conn, filepath):
     qualityOfLife = []
     population = [] 
     for tup in data: 
-        # print(tup)
         cityNames.append(tup[0])
         population.append(tup[1])
         income.append(tup[2])
@@ -339,67 +336,78 @@ def salary_quality(cur, conn, filepath):
 
 
 
+
+'''–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– JOIN –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
+def joinCitiesData(cur, conn):
+    cur.execute("SELECT Quality_of_Life, Average_Annual_Salary, Population FROM CitiesData JOIN RestaurantCities ON trim(CitiesData.CityID) = trim(RestaurantCities.ID)")
+    conn.commit()
+    joined = cur.fetchall()
+    for x in joined: 
+        print(x)
+    cur.execute("INSERT INTO RestaurantCities ") 
+    cur.close()
+
+
+
 '''–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– VISUALIZATION ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
-def weather_visualization():
-    with sqlite3.connect(path) as weather_data:
-        cur = weather_data.cursor()
-        data = cur.execute("SELECT * FROM WeatherData").fetchall()
+def weather_visualization(cur):
+    data = cur.execute("SELECT * FROM WeatherData").fetchall()
 
-        AA_data = []
-        for item in data: 
-            if 'Ann Arbor' in item: 
-                AA_data.append(item)
+    AA_data = []
+    for item in data: 
+        if 'Ann Arbor' in item: 
+            AA_data.append(item)
 
-        LA_data = []
-        for item in data: 
-            if "Los Angeles" in item: 
-                LA_data.append(item)
-        
-        Chi_data = []
-        for item in data: 
-            if "Chicago" in item: 
-                Chi_data.append(item)
+    LA_data = []
+    for item in data: 
+        if "Los Angeles" in item: 
+            LA_data.append(item)
+    
+    Chi_data = []
+    for item in data: 
+        if "Chicago" in item: 
+            Chi_data.append(item)
 
-        Det_data = []
-        for item in data: 
-            if "Detroit" in item: 
-                Det_data.append(item)
+    Det_data = []
+    for item in data: 
+        if "Detroit" in item: 
+            Det_data.append(item)
 
-        NYC_data = []
-        for item in data: 
-            if "New York City" in item: 
-                NYC_data.append(item)
-        
-        aa_temperature = []
-        la_temperature = []
-        chi_temperature = []
-        det_temperature = []
-        nyc_temperature = []
-        aa_time = []
-        la_time = [] 
-        chi_time = [] 
-        det_time = [] 
-        nyc_time = [] 
+    NYC_data = []
+    for item in data: 
+        if "New York City" in item: 
+            NYC_data.append(item)
+    
+    aa_temperature = []
+    la_temperature = []
+    chi_temperature = []
+    det_temperature = []
+    nyc_temperature = []
+    aa_time = []
+    la_time = [] 
+    chi_time = [] 
+    det_time = [] 
+    nyc_time = [] 
 
-        for i in AA_data: 
-            aa_temperature.append(i[3])
-            aa_time.append(i[1])
+    for i in AA_data: 
+        aa_temperature.append(i[3])
+        aa_time.append(i[1])
 
-        for i in LA_data: 
-            la_temperature.append(i[3])
-            la_time.append(i[1])
+    for i in LA_data: 
+        la_temperature.append(i[3])
+        la_time.append(i[1])
 
-        for i in Chi_data: 
-            chi_temperature.append(i[3])
-            chi_time.append(i[1])
+    for i in Chi_data: 
+        chi_temperature.append(i[3])
+        chi_time.append(i[1])
 
-        for i in Det_data: 
-            det_temperature.append(i[3])
-            det_time.append(i[1])
-        
-        for i in NYC_data: 
-            nyc_temperature.append(i[3])
-            nyc_time.append(i[1])
+    for i in Det_data: 
+        det_temperature.append(i[3])
+        det_time.append(i[1])
+    
+    for i in NYC_data: 
+        nyc_temperature.append(i[3])
+        nyc_time.append(i[1])
 
 
     '''Plotting the data'''
@@ -451,47 +459,44 @@ def weather_visualization():
 
 
 
-def yelp_visualization():
-    with sqlite3.connect(path) as Yelpdatabase:
-        cur = Yelpdatabase.cursor()
-        cur.execute("SELECT * FROM YelpData")
-        data = cur.fetchall()
-        print(data)
+def yelp_visualization(cur):
+    cur.execute("SELECT * FROM YelpData")
+    data = cur.fetchall()
 
-        AnnArborRatings = [] 
-        NewYorkRatings = [] 
-        
-        for items in data[:50]: 
-            AnnArborRatings.append(items[2])
-        for items in data[200:]: 
-            NewYorkRatings.append(items[2])
-        
-        AA_rated_four = [] 
-        NY_rated_four = [] 
-        for rating in AnnArborRatings: 
-            if rating == 4.0: 
-                AA_rated_four.append(rating)
-        for rating in NewYorkRatings: 
-            if rating == 4.0: 
-                NY_rated_four.append(rating)
+    AnnArborRatings = [] 
+    NewYorkRatings = [] 
+    
+    for items in data[:50]: 
+        AnnArborRatings.append(items[2])
+    for items in data[200:]: 
+        NewYorkRatings.append(items[2])
+    
+    AA_rated_four = [] 
+    NY_rated_four = [] 
+    for rating in AnnArborRatings: 
+        if rating == 4.0: 
+            AA_rated_four.append(rating)
+    for rating in NewYorkRatings: 
+        if rating == 4.0: 
+            NY_rated_four.append(rating)
 
-        AA_rated_four_five = []
-        NY_rated_four_five =[]
-        for rating in AnnArborRatings: 
-            if rating == 4.5: 
-                AA_rated_four_five.append(rating)
-        for rating in NewYorkRatings: 
-            if rating == 4.5: 
-                NY_rated_four_five.append(rating)
+    AA_rated_four_five = []
+    NY_rated_four_five =[]
+    for rating in AnnArborRatings: 
+        if rating == 4.5: 
+            AA_rated_four_five.append(rating)
+    for rating in NewYorkRatings: 
+        if rating == 4.5: 
+            NY_rated_four_five.append(rating)
 
-        AA_rated_five = []
-        NY_rated_five = []
-        for rating in AnnArborRatings: 
-            if rating == 5.0: 
-                AA_rated_five.append(rating)
-        for rating in NewYorkRatings: 
-            if rating == 5.0: 
-                NY_rated_five.append(rating)
+    AA_rated_five = []
+    NY_rated_five = []
+    for rating in AnnArborRatings: 
+        if rating == 5.0: 
+            AA_rated_five.append(rating)
+    for rating in NewYorkRatings: 
+        if rating == 5.0: 
+            NY_rated_five.append(rating)
         
 
     '''Plotting the data'''
@@ -509,6 +514,7 @@ def yelp_visualization():
 
     '''Adding labels, title and custom x-axis tick labels, etc. '''
     ax.set_ylabel('Number of Restaurants With Rating')
+    ax.set_xlabel('Rating')
     ax.set_title('Restaurants in Ann Arbor and New York With Each Rating')
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
@@ -516,6 +522,151 @@ def yelp_visualization():
 
     fig.tight_layout()
     plt.show()
+
+
+
+def yelp_visualization2(cur):
+    CitiesData = cur.execute("SELECT * FROM CitiesData").fetchall()
+    data = cur.execute("SELECT * FROM YelpData").fetchall()
+
+    GrandRapidsPrices = [] 
+    NashPrices = [] 
+    IndiPrices = []
+    LancasterPrices = []
+
+    for items in data[350:399]: 
+        GrandRapidsPrices.append(items[1])
+    for items in data[300:349]: 
+        NashPrices.append(items[1])
+    for items in data[250:299]: 
+        IndiPrices.append(items[1])
+    for items in data[400:]:
+        LancasterPrices.append(items[1])
+
+    GR_S = [] 
+    Nash_S = [] 
+    Indi_S = [] 
+    Lancaster_S = [] 
+    GR_SS = [] 
+    Nash_SS = [] 
+    Indi_SS = [] 
+    Lancaster_SS = [] 
+    GR_SSS = [] 
+    Nash_SSS = [] 
+    Indi_SSS = [] 
+    Lancaster_SSS = [] 
+    GR_SSSS = [] 
+    Nash_SSSS = [] 
+    Indi_SSSS = [] 
+    Lancaster_SSSS = [] 
+
+    for price in GrandRapidsPrices: 
+        if price == '$': 
+            GR_S.append(price)
+        if price == '$$': 
+            GR_SS.append(price)
+        if price == '$$$': 
+            GR_SSS.append(price)
+        if price == '$$$$': 
+            GR_SSSS.append(price)
+
+    for price in NashPrices: 
+        if price == '$': 
+            Nash_S.append(price)
+        if price == '$$': 
+            Nash_SS.append(price)
+        if price == '$$$': 
+            Nash_SSS.append(price)
+        if price == '$$$$': 
+            Nash_SSSS.append(price)
+
+    for price in IndiPrices: 
+        if price == '$': 
+            Indi_S.append(price)
+        if price == '$$': 
+            Indi_SS.append(price)
+        if price == '$$$': 
+            Indi_SSS.append(price)
+        if price == '$$$$': 
+            Indi_SSSS.append(price)
+    
+    for price in LancasterPrices: 
+        if price == '$': 
+            Lancaster_S.append(price)
+        if price == '$$': 
+            Lancaster_SS.append(price)
+        if price == '$$$': 
+            Lancaster_SSS.append(price)
+        if price == '$$$$': 
+            Lancaster_SSSS.append(price)
+
+    '''Plotting the data''' 
+    '''Creating pie chart for Distribution of Indiana Prices'''
+    IndianaLow = len(Indi_S) #doing this to create the percentages of each price within the total amount 
+    IndianaMidLow = len(Indi_SS)
+    IndianaMidHigh = len(Indi_SSS)
+    IndianaHigh = len(Indi_SSSS)
+
+    y = np.array([IndianaLow, IndianaMidLow, IndianaMidHigh, IndianaHigh])
+    mylabels = "1", "2", '3', '4'
+    myexplode = [0.1, 0.1, 0.1, 0.1]
+    colors = ["magenta", "blue", "pink", "yellow"]
+
+    plt.pie(y, labels = mylabels, colors = colors, explode = myexplode, shadow = True, autopct='%1.1f%%')
+    plt.title('Indiana Price Distribution Across 50 Restaurants')
+    plt.legend(loc="lower right", title = "Indiana Prices:")
+    plt.show() 
+
+    '''Creating pie chart for Distribution of Lancaster Prices'''
+    LancasterLow = len(Lancaster_S) #doing this to create the percentages of each price within the total amount 
+    LancasterMidLow = len(Lancaster_SS)
+    LancasterMidHigh = len(Lancaster_SSS)
+    LancasterHigh = len(Lancaster_SSSS)
+
+    y = np.array([LancasterLow, LancasterMidLow, LancasterMidHigh, LancasterHigh])
+    mylabels = "1", "2", '3', '4'
+    myexplode = [0.1, 0.1, 0, 0.1]
+    colors = ["magenta", "blue", "pink", "yellow"]
+
+
+    plt.pie(y, labels = mylabels, colors = colors, explode = myexplode, shadow = True, autopct='%1.1f%%')
+    plt.title('Lancaster Price Distribution Across 50 Restaurants')
+    plt.legend(loc="lower right", title = "Lancaster Prices:")
+    plt.show() 
+
+    '''Creating pie chart for Distribution of Grand Rapids Prices'''
+    GrandRapidsLow = len(GR_S) #doing this to create the percentages of each price within the total amount 
+    GrandRapidsMidLow = len(GR_SS)
+    GrandRapidsMidHigh = len(GR_SSS)
+    GrandRapidsHigh = len(GR_SSSS)
+
+    y = np.array([GrandRapidsLow, GrandRapidsMidLow, GrandRapidsMidHigh, GrandRapidsHigh])
+    mylabels = "1", "2", '3', '4'
+    myexplode = [0.1, 0.1, 0.1, 0]
+    colors = ["magenta", "blue", "pink", "yellow"]
+
+    plt.tight_layout()
+
+    plt.pie(y, labels = mylabels, colors = colors, explode = myexplode, shadow = True, autopct='%1.1f%%', pctdistance=0.9)
+    plt.title('Grand Rapids Price Distribution Across 50 Restaurants')
+    plt.legend(loc="lower right", title = "Grand Rapids Prices:")
+    plt.show() 
+
+    '''Creating pie chart for Distribution of Nashville Prices'''
+    NashvilleLow = len(Lancaster_S) #doing this to create the percentages of each price within the total amount 
+    NashvilleMidLow = len(Lancaster_SS)
+    NashvilleMidHigh = len(Nash_SSS)
+    NashvilleHigh = len(Nash_SSSS)
+
+    y = np.array([NashvilleLow, NashvilleMidLow, NashvilleMidHigh, NashvilleHigh])
+    mylabels = "1", "2", '3', '4'
+    myexplode = [0.1, 0.1, 0.1, 0.1]
+    colors = ["magenta", "blue", "pink", "yellow"]
+
+    plt.pie(y, labels = mylabels, colors = colors, explode = myexplode, shadow = True, autopct='%1.1f%%')
+    plt.title('Nashville Price Distribution Across 50 Restaurants')
+    plt.legend(loc="lower right", title = "Nashville Prices:")
+    plt.show() 
 
 
 
@@ -566,9 +717,6 @@ def cities_visualization(cur):
 
 
 
-'''–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– JOIN –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
-
-
 
 '''–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– MAIN –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
 def main():
@@ -609,14 +757,20 @@ def main():
 
     '''Calling all calculation functions.'''
     convertFromKelvinToCelsiusAndFahrenheit(cur, conn, 'TempInDiffForms.csv')
-    PricesPerCityCount(cur, conn,'PricesPerCityCount.csv')
+    PricesPerCityCount(cur, conn, 'PricesPerCityCount.csv')
     salary_quality(cur, conn, 'CitiesInformation.csv')
 
 
 
+    '''Calling the JOIN statement function.'''
+    joinCitiesData(cur, conn)
+
+
+
     '''Calling all visualization functions.'''
-    weather_visualization()
-    yelp_visualization()
+    weather_visualization(cur)
+    yelp_visualization(cur)
+    yelp_visualization2(cur)
     cities_visualization(cur)
 
 if __name__ == "__main__":
