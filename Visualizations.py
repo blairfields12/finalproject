@@ -245,7 +245,7 @@ def yelp_visualization2(cur):
     colors = ["magenta", "blue", "pink", "yellow"]
 
     plt.pie(y, labels = mylabels, colors = colors, explode = myexplode, shadow = True, autopct='%1.1f%%')
-    plt.title('Indiana Price Distribution Across 50 Restaurants')
+    plt.title('Indianapolis Price Distribution Across 50 Restaurants')
     plt.legend(loc="lower right", title = "Indiana Prices:")
     plt.show() 
 
