@@ -270,24 +270,24 @@ def PricesPerCityCount(cur, conn, filepath):
             if tup[0] == '$':
                 if tup[1] == 2:
                     annArborprice1 += 1 
-                if tup[1] == 42: 
+                if tup[1] == 41: 
                     NewYorkprice1 += 1 
             if tup[0] == '$$':
                 if tup[1] == 2:
                     annArborprice2 += 1 
-                if tup[1] == 42: 
+                if tup[1] == 41: 
                     NewYorkprice2 += 1 
 
             if tup[0] == '$$$':
                 if tup[1] == 2:
                     annArborprice3 += 1 
-                if tup[1] == 42: 
+                if tup[1] == 41: 
                     NewYorkprice3 += 1 
             
             if tup[0] == '$$$$':
                 if tup[1] == 2:
                     annArborprice4 += 1 
-                if tup[1] == 42:
+                if tup[1] == 41:
                     NewYorkprice4 += 1
         
 
