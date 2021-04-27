@@ -14,14 +14,15 @@ with sqlite3.connect(path) as Yelpdatabase:
     cur = Yelpdatabase.cursor()
     cur.execute("SELECT * FROM YelpData")
     data = cur.fetchall()
-    print(data)
+    # print(data)
 
     AnnArborRatings = [] 
     NewYorkRatings = [] 
     
     for items in data[:50]: 
         AnnArborRatings.append(items[2])
-    for items in data[200:]: 
+    for items in data[200:249]: 
+        # print(items[4])
         NewYorkRatings.append(items[2])
     # print(AnnArborRatings)
     # print(LosAngelesRatings)
@@ -73,10 +74,11 @@ opacity = 0.4
 
 fig, ax = plt.subplots()
 rects1 = ax.bar(x - width/2, AARatingsCount, width, alpha = opacity, color = 'blue', label='Ann Arbor')
-rects2 = ax.bar(x + width/2, NYRatingsCount, width, alpha = opacity, color = 'red', label='Los Angeles')
+rects2 = ax.bar(x + width/2, NYRatingsCount, width, alpha = opacity, color = 'red', label='New York')
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
 ax.set_ylabel('Number of Restaurants With Rating')
+ax.set_xlabel('Ratings')
 ax.set_title('Restaurants in Ann Arbor and New York With Each Rating')
 ax.set_xticks(x)
 ax.set_xticklabels(labels)
@@ -86,3 +88,4 @@ ax.legend()
 fig.tight_layout()
 
 plt.show()
+
