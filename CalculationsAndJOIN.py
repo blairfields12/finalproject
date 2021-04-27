@@ -105,7 +105,8 @@ def PricesPerCityCount(cur, conn, filepath):
 
 
 def salary_quality(cur, conn, filepath):
-    '''Calculating the socioeconomic status for each city to see if restaurants that are pricer have more wealthy people in that city.'''
+    '''Dividing the average annual salary by the quality of life (for the respective city) to get the dollar value of a quality of life point
+    for each individual city.'''
     cur.execute('SELECT * FROM CitiesData')
     data = cur.fetchall()
     conn.commit()
