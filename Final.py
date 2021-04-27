@@ -400,8 +400,8 @@ def weather_visualization(cur):
     ax.plot(times, det_temperature, 'b', label = 'Detroit')
     ax.plot(times, nyc_temperature, 'k', label = 'NYC')
     ax.legend()
-    ax.set_ylabel('Temperature in Kelvin')
-    ax.set_xlabel('Time in UNIX')
+    ax.set_ylabel('Temperature (in Kelvin)')
+    ax.set_xlabel('Time (in Unix - shorted to last 5 digits)')
     ax.set_title('Temperature Values for Ann Arbor vs. Los Angeles vs. Chicago \n vs. Detroit vs. NYC Over a 25 Hour Period', fontsize= 10)
     ax.grid()
     plt.show()
@@ -417,10 +417,11 @@ def yelp_visualization(cur):
     AnnArborRatings = [] 
     NewYorkRatings = [] 
     
-    for items in data[:50]: 
-        AnnArborRatings.append(items[2])
-    for items in data[200:]: 
-        NewYorkRatings.append(items[2])
+    for items in data: 
+        if 'Ann Arbor' in items:
+            AnnArborRatings.append(items[2])
+        if 'New York' in items:
+            NewYorkRatings.append(items[2])
     
     AA_rated_four = [] 
     NY_rated_four = [] 
@@ -461,7 +462,7 @@ def yelp_visualization(cur):
 
     fig, ax = plt.subplots()
     rects1 = ax.bar(x - width/2, AARatingsCount, width, alpha = opacity, color = 'blue', label='Ann Arbor')
-    rects2 = ax.bar(x + width/2, NYRatingsCount, width, alpha = opacity, color = 'red', label='Los Angeles')
+    rects2 = ax.bar(x + width/2, NYRatingsCount, width, alpha = opacity, color = 'red', label='New York')
 
     '''Adding labels, title and custom x-axis tick labels, etc. '''
     ax.set_ylabel('Number of Restaurants With Rating')
@@ -485,14 +486,15 @@ def yelp_visualization2(cur):
     IndiPrices = []
     LancasterPrices = []
 
-    for items in data[350:399]: 
-        GrandRapidsPrices.append(items[1])
-    for items in data[300:349]: 
-        NashPrices.append(items[1])
-    for items in data[250:299]: 
-        IndiPrices.append(items[1])
-    for items in data[400:]:
-        LancasterPrices.append(items[1])
+    for items in data: 
+        if 59 in items:
+            GrandRapidsPrices.append(items[1])
+        if 53 in items:
+            NashPrices.append(items[1])
+        if 51 in items:
+            IndiPrices.append(items[1])
+        if 65 in items:
+            LancasterPrices.append(items[1])
 
     GR_S = [] 
     Nash_S = [] 
@@ -559,7 +561,7 @@ def yelp_visualization2(cur):
     IndianaHigh = len(Indi_SSSS)
 
     y = np.array([IndianaLow, IndianaMidLow, IndianaMidHigh, IndianaHigh])
-    mylabels = "1", "2", '3', '4'
+    mylabels = "Range 1: 0-10", "Range 2: 11-30", 'Range 3: 31-60', 'Range 4: 61+'
     myexplode = [0.1, 0.1, 0.1, 0.1]
     colors = ["magenta", "blue", "pink", "yellow"]
 
@@ -575,7 +577,7 @@ def yelp_visualization2(cur):
     LancasterHigh = len(Lancaster_SSSS)
 
     y = np.array([LancasterLow, LancasterMidLow, LancasterMidHigh, LancasterHigh])
-    mylabels = "1", "2", '3', '4'
+    mylabels = "Range 1: 0-10", "Range 2: 11-30", 'Range 3: 31-60', 'Range 4: 61+'
     myexplode = [0.1, 0.1, 0, 0.1]
     colors = ["magenta", "blue", "pink", "yellow"]
 
@@ -592,7 +594,7 @@ def yelp_visualization2(cur):
     GrandRapidsHigh = len(GR_SSSS)
 
     y = np.array([GrandRapidsLow, GrandRapidsMidLow, GrandRapidsMidHigh, GrandRapidsHigh])
-    mylabels = "1", "2", '3', '4'
+    mylabels = "Range 1: 0-10", "Range 2: 11-30", 'Range 3: 31-60', 'Range 4: 61+'
     myexplode = [0.1, 0.1, 0.1, 0]
     colors = ["magenta", "blue", "pink", "yellow"]
 
@@ -610,7 +612,7 @@ def yelp_visualization2(cur):
     NashvilleHigh = len(Nash_SSSS)
 
     y = np.array([NashvilleLow, NashvilleMidLow, NashvilleMidHigh, NashvilleHigh])
-    mylabels = "1", "2", '3', '4'
+    mylabels = "Range 1: 0-10", "Range 2: 11-30", 'Range 3: 31-60', 'Range 4: 61+'
     myexplode = [0.1, 0.1, 0.1, 0.1]
     colors = ["magenta", "blue", "pink", "yellow"]
 
