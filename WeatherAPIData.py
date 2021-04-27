@@ -20,7 +20,7 @@ det_latitude = 42.3314
 det_longitude = 83.0458
 nyc_latitude = 40.7128
 nyc_longitude = 74.0060
-start_date = 1619323200
+start_date = 1619496000
 
 
 
