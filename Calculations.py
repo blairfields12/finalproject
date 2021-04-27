@@ -114,11 +114,13 @@ def salary_quality(cur, conn, filepath):
     income = []
     qualityOfLife = []
     population = [] 
+    stateNames = []
     for tup in data: 
         cityNames.append(tup[0])
-        population.append(tup[1])
-        income.append(tup[2])
-        qualityOfLife.append(tup[3])
+        stateNames.append(tup[1])
+        population.append(tup[2])
+        income.append(tup[3])
+        qualityOfLife.append(tup[4])
 
 
     """Trying to calculate if there is a relationship between each cities income and their quality of life rating."""
@@ -130,10 +132,10 @@ def salary_quality(cur, conn, filepath):
 
     with open(filepath, 'w', newline = '', encoding= 'utf-8') as f: 
         f = csv.writer(f, delimiter = ',')
-        f.writerow(['City Name', 'Populations', 'Avg Income', 'Quality of Life', 'Avg Income / Quality of Life'])
+        f.writerow(['City Name', 'State Name', 'Populations', 'Avg Income', 'Quality of Life', 'Avg Income / Quality of Life'])
         count = 0
         for i in population:
-            headers = (cityNames[count], population[count], income[count], qualityOfLife[count], relationships[count][1])
+            headers = (cityNames[count], stateNames[count], population[count], income[count], qualityOfLife[count], relationships[count][1])
             count += 1
             f.writerow(headers)
 
