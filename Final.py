@@ -665,7 +665,7 @@ def cities_visualization(cur):
     plt.subplots_adjust(bottom = 0.5) 
     plt.ylabel('Value ($) of 1 point on Quality of Life Scale')
     plt.xlabel('City Name')
-
+    plt.grid(True)
     plt.show()
 
 
